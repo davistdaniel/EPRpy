@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from matplotlib.widgets import Button
+
 
 
 color_cycle = plt.cm.tab10.colors[:10]
@@ -47,6 +49,8 @@ def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_im
         plot_1d(eprdata_list,plot_imag)
     elif ndim==2:
         plot_2d(eprdata_list,plot_type, slices, spacing)
+
+    plt.show()
 
 
 def plot_1d(eprdata_list,plot_imag=True):
@@ -96,8 +100,8 @@ def plot_2d(eprdata_list,plot_type='stacked',slices='all', spacing=0.5):
         superimposed_plot(data,selected_slices,slice_colors)
     elif plot_type=='stacked':
         stack_plot(data,selected_slices,slice_colors,spacing)
-    elif plot_type=='contour':
-        contour_plot(data,slice_len,selected_slices)
+    elif plot_type=='pcolor':
+        pcolor_plot(data,slice_len,selected_slices)
 
 def stack_plot(data,selected_slices,slice_colors,spacing):
 
@@ -110,8 +114,8 @@ def surf_plot(data,slice_len,selected_slices):
     fig,ax = plt.subplots(subplot_kw={"projection": "3d"})
     X, Y = np.meshgrid(range(slice_len), selected_slices)
     Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
-    surf = ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.8)
-    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=5)
+    surf = ax.plot_surface(X, Y, Z, cmap='viridis')
+    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
 
 def superimposed_plot(data,selected_slices,slice_colors):
     fig,ax = plt.subplots()
@@ -119,9 +123,38 @@ def superimposed_plot(data,selected_slices,slice_colors):
         slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
         ax.plot(slice_data, color=slice_colors[idx % len(slice_colors)], alpha=0.5, label=f'Slice {slice_idx}' if idx == 0 else "_nolegend_")
 
-def contour_plot(data,slice_len,selected_slices):
+def pcolor_plot(data,slice_len,selected_slices):
     fig,ax = plt.subplots()
     X, Y = np.meshgrid(range(slice_len), selected_slices)
     Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
-    contour = ax.contourf(X, Y, Z, cmap='viridis', alpha=0.7)
-    fig.colorbar(contour)
+    pc = ax.pcolor(X, Y, Z, cmap='jet')
+    fig.colorbar(pc)
+
+def interactive_points_selector(x,y):
+    fig,ax =plt.subplots()
+    ax.plot(x,y)
+    ax.set_title('Select points by left clicl. When compelted, click Done.')
+    selected_points = []
+
+    def clicked(event):
+        if event.inaxes == ax:
+            x_id = event.xdata
+            idx = int((np.abs(x - x_id)).argmin())
+            selected_points.append(idx)
+            ax.plot(x[idx],y[idx],'rx')
+            fig.canvas.draw()
+    def done(event):
+        plt.close(fig)
+    
+    done_button_ax = plt.axes([0.8, 0.05, 0.1, 0.075])
+    done_button = Button(done_button_ax, 'Done')
+    done_button.on_clicked(done)
+    fig.canvas.mpl_connect('button_press_event', clicked)
+
+    # block function until figure is closed.
+    plt.show(block=True)
+    
+    ## sort the points
+    selected_points_sorted = sorted(selected_points, key=lambda idx: x[idx])
+
+    return np.unique(np.array(selected_points_sorted, dtype=int))

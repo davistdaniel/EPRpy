@@ -6,7 +6,7 @@ from pathlib import Path
 from copy import deepcopy
 
 from eprpy.plotter import eprplot
-from eprpy.processor import eprscale_between
+from eprpy.processor import _integrate,_scale_between,_baseline_correct
 
 
 def load(filepath):
@@ -242,6 +242,7 @@ class EprData():
     
     def __init__(self,out_dict):
         
+        self.data_dict = out_dict
         self.filepath = out_dict['filepath']
         self.data = out_dict['data']
         self.dims = out_dict['dims']
@@ -249,8 +250,8 @@ class EprData():
         self.is_complex = out_dict['is_complex']
         self.history = out_dict['history']
         self.history[0].append(deepcopy(self))
-        self.x = self.dims[0].copy()
-        self.y = self.dim[1].copy() if len(self.dims) >1 else None
+        self.x = self.dims[-1].copy()
+        self.y = self.dims[-2].copy() if len(self.dims) >1 else None
     
     def plot(self,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
 
@@ -258,7 +259,28 @@ class EprData():
 
     def scale_between(self,min_val=None,max_val=None):
 
-        eprscale_between(self,min_val,max_val)
+        _scale_between(self,min_val,max_val)
+
+    def integral(self):
+        
+        _integrate(self)
+
+    def baseline_correction(eprdata,interactive=False,
+                      npts=10,method='linear',spline_smooth=1e-5,
+                      order=2):
+        
+        _baseline_correct(eprdata,interactive,
+                          npts,method,spline_smooth,order)
+        
+    def select_region(self,region):
+
+
+        assert type(region) in [range,list],'region keyword must be a range object or list.'
+        out_dict = deepcopy(self.data_dict)
+        out_dict['dims'][-1] =  out_dict['dims'][-1][region]
+        out_dict['data'] =  out_dict['data'][...,region]
+
+        return EprData(out_dict)
 
         
         
