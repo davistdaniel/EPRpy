@@ -249,9 +249,10 @@ class EprData():
         self.acq_param = out_dict['acq_param']
         self.is_complex = out_dict['is_complex']
         self.history = out_dict['history']
-        self.history[0].append(deepcopy(self))
         self.x = self.dims[-1].copy()
         self.y = self.dims[-2].copy() if len(self.dims) >1 else None
+        self.history[0].append(deepcopy(self))
+
     
     def plot(self,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
 
