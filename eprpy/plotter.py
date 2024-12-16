@@ -2,12 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.widgets import Button
+import warnings
+warnings.simplefilter('always')
 
 
 
 color_cycle = plt.cm.tab10.colors[:10]
 
-def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
+def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,g_scale=False):
     """
     Plot one or multiple EPR data objects for comparison.
 
@@ -46,14 +48,20 @@ def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_im
         ndim=2
 
     if ndim==1:
-        plot_1d(eprdata_list,plot_imag)
+        fig,ax = plot_1d(eprdata_list,g_scale,plot_imag)
     elif ndim==2:
-        plot_2d(eprdata_list,plot_type, slices, spacing)
+        fig,ax = plot_2d(eprdata_list,g_scale,plot_type, slices, spacing)
 
+    fig.tight_layout()
+    if g_scale and eprdata_list[0].g is not None: 
+        ax.invert_xaxis()
+    
     plt.show()
 
+    return fig,ax
 
-def plot_1d(eprdata_list,plot_imag=True):
+
+def plot_1d(eprdata_list,g_scale,plot_imag=True):
     
     c_idx = -1
 
@@ -62,12 +70,19 @@ def plot_1d(eprdata_list,plot_imag=True):
 
     for idx, eprdata in enumerate(eprdata_list):
 
-        if c_idx>20:
+        if c_idx>=9:
             c_idx=-1
         c_idx+=1
 
         data = eprdata.data
-        x = eprdata.x
+        if g_scale:
+            if eprdata.g is not None:
+                x = eprdata.g
+            else:
+                x = eprdata.x
+                warnings.warn('Unable to set g values as axis.')  
+        else:
+            x = eprdata.x
 
         if np.iscomplexobj(data):
             ax.plot(x,np.real(data), label=f'Real',color=color_cycle[c_idx])
@@ -75,11 +90,21 @@ def plot_1d(eprdata_list,plot_imag=True):
                 ax.plot(x,np.imag(data), '--', alpha=0.5, label='Imaginary',color=color_cycle[c_idx])
         else:
             ax.plot(x,data, label='Real',color=color_cycle[c_idx])
+    
+    return fig,ax
+        
 
-def plot_2d(eprdata_list,plot_type='stacked',slices='all', spacing=0.5):
+def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
 
     data = eprdata_list[0].data
-    x = eprdata_list[0].x
+    if g_scale:
+        if eprdata_list[0].g is not None:
+            x = eprdata_list[0].g
+        else:
+            x = eprdata_list[0].x
+            warnings.warn('Unable to set g values as axis.')  
+    else:
+        x = eprdata_list[0].x
     y = eprdata_list[0].y
     num_slices, slice_len = data.shape
 
@@ -99,13 +124,15 @@ def plot_2d(eprdata_list,plot_type='stacked',slices='all', spacing=0.5):
     slice_colors = cm.winter(np.linspace(0, 1, num_selected_slices))  # Gradual colors for larger slices
 
     if plot_type=='surf':
-        surf_plot(data,x,y,slice_len,selected_slices)
+        fig,ax = surf_plot(data,x,y,slice_len,selected_slices)
     elif plot_type=='superimposed':
-        superimposed_plot(data,x,y,selected_slices,slice_colors)
+        fig,ax = superimposed_plot(data,x,y,selected_slices,slice_colors)
     elif plot_type=='stacked':
-        stack_plot(data,x,y,selected_slices,slice_colors,spacing)
+        fig,ax = stack_plot(data,x,y,selected_slices,slice_colors,spacing)
     elif plot_type=='pcolor':
-        pcolor_plot(data,x,y,slice_len,selected_slices)
+        fig,ax = pcolor_plot(data,x,y,slice_len,selected_slices)
+    
+    return fig,ax
 
 def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
 
@@ -114,6 +141,8 @@ def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
         slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
         ax.plot(x,slice_data + idx * spacing, color=slice_colors[idx % len(slice_colors)], alpha=0.7)
 
+    return fig,ax
+
 def surf_plot(data,x,y,slice_len,selected_slices):
     fig,ax = plt.subplots(subplot_kw={"projection": "3d"})
     X, Y = np.meshgrid(x[range(slice_len)], y[selected_slices])
@@ -121,11 +150,16 @@ def surf_plot(data,x,y,slice_len,selected_slices):
     surf = ax.plot_surface(X, Y, Z, cmap='viridis')
     fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
 
+    return fig,ax
+
 def superimposed_plot(data,x,y,selected_slices,slice_colors):
     fig,ax = plt.subplots()
     for idx, slice_idx in enumerate(selected_slices):
         slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
         ax.plot(x,slice_data, color=slice_colors[idx % len(slice_colors)], alpha=0.5, label=f'Slice {slice_idx}' if idx == 0 else "_nolegend_")
+    
+    return fig,ax
+
 
 def pcolor_plot(data,x,y,slice_len,selected_slices):
     fig,ax = plt.subplots()
@@ -134,10 +168,12 @@ def pcolor_plot(data,x,y,slice_len,selected_slices):
     pc = ax.pcolor(X, Y, Z, cmap='jet')
     fig.colorbar(pc)
 
+    return fig,ax
+
 def interactive_points_selector(x,y):
     fig,ax =plt.subplots()
     ax.plot(x,y)
-    ax.set_title('Select points by left clicl. When compelted, click Done.')
+    ax.set_title('Select points by left click. Click Done after selecting all points.')
     selected_points = []
 
     def clicked(event):

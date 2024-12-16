@@ -10,7 +10,7 @@ from eprpy.processor import _integrate,_scale_between,_baseline_correct
 
 
 def load(filepath):
-    """This function reads EPR experiment files in Bruker spectrometer file format (BES3T 1.2).
+    """This function reads EPR experiment files from Bruker spectrometer file format (BES3T 1.2).
 
     Parameters
     ----------
@@ -251,12 +251,17 @@ class EprData():
         self.history = out_dict['history']
         self.x = self.dims[-1].copy()
         self.y = self.dims[-2].copy() if len(self.dims) >1 else None
+        if self.acq_param['XNAM'] == 'Field':
+            x_g = np.ma.masked_equal(self.x,0)
+            self.g = ((float(self.acq_param['MWFQ'])/1e+9)/(13.996*(x_g/10000)))
+        else:
+            self.g = None
         self.history[0].append(deepcopy(self))
 
     
-    def plot(self,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
+    def plot(self,g_scale=False,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
 
-        eprplot(self,plot_type,slices,spacing,plot_imag)
+        eprplot(self,plot_type,slices,spacing,plot_imag,g_scale=g_scale)
 
     def scale_between(self,min_val=None,max_val=None):
 
@@ -282,6 +287,18 @@ class EprData():
         out_dict['data'] =  out_dict['data'][...,region]
 
         return EprData(out_dict)
+    
+    def undo(self):
+        """
+        Undo the processing step done on an EprData object by returning the previous EprData object.
+
+        Returns
+        -------
+        EprData
+            Returns the last-saved EprData object from EprData.history
+        """
+
+        return self.history[-1][1]
 
         
         
