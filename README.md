@@ -9,14 +9,14 @@ The library is born out of a collection of scripts I wrote for routine analysis 
 
 ## Installation
 
-Clone or download this repository and then navigate the folder where setup.py file is present.
+Clone or download this repository and then navigate to the folder where setup.py file is present.
 Then, type in a terminal :
 
 `python -m pip install .`
 
 ## Documentation
 
-Pre-built documentation will be updated soon, source files for building the docs using sphinx can be found in docs/sources.
+Pre-built documentation will be updated soon, source files for building the docs using sphinx can be found in docs/source/ .
 
 ## Features
 
