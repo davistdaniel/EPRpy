@@ -10,17 +10,29 @@ from eprpy.processor import _integrate,_scale_between,_baseline_correct
 
 
 def load(filepath):
-    """This function reads EPR experiment files from Bruker spectrometer file format (BES3T 1.2).
+
+    """
+    Load EPR experiment files from the Bruker spectrometer file format (BES3T 1.2).
 
     Parameters
     ----------
     filepath : str
-        A filepath which points to either .DSC or .DTA file
+        The path to a .DSC or .DTA file containing EPR experimental data.
 
     Returns
     -------
-    out_dict : dict
-        A dictionary containing differente keys
+    EprData
+        An instance of the `EprData` class.
+
+    Notes
+    -----
+    - The returned `EprData` object includes attributes such as:
+        - `filepath`: The input file path.
+        - `dims`: A list of dimensions of the data.
+        - `data`: The experimental data, either real or complex.
+        - `acq_param`: A dictionary of acquisition parameters.
+        - `is_complex`: Boolean indicating if the data is complex.
+        - `history`: A log of actions performed on the data, initialized with a load entry.
     """
 
     out_dict = {'dims':None,
@@ -90,6 +102,30 @@ def check_filepaths(filepath):
 
 def read_DSC_file(dsc_filepath):
 
+    """
+    Read and parse a DSC file from a Bruker EPR spectrometer.
+
+    Parameters
+    ----------
+    dsc_filepath : str
+        The file path to the `.DSC` file containing acquisition parameters.
+
+    Returns
+    -------
+    parameter_dict : dict
+        A dictionary containing the parameters and their corresponding values extracted 
+        from the DSC file.
+
+    Notes
+    -----
+    - The function reads each line of the `.DSC` file and extracts parameter-value pairs.
+    - Lines starting with `*` or blank lines are ignored as comments. 
+    - Parameters are stored as keys in the dictionary, and their values are converted 
+      to appropriate types:
+        - Numeric values are stored as `int` or `float`.
+        - Text values enclosed in single quotes are stored as `str`.
+    """
+
     parameter_dict = {}
 
     with open(dsc_filepath,'r') as dsc_file:
@@ -114,6 +150,33 @@ def read_DSC_file(dsc_filepath):
     return parameter_dict
 
 def read_DTA_file(dta_filepath,dsc_parameter_dict):
+
+    """
+    Read and parse a DTA file from a Bruker EPR spectrometer.
+
+    Parameters
+    ----------
+    dta_filepath : str
+        The file path to the `.DTA` file containing binary EPR data.
+    dsc_parameter_dict : dict
+        A dictionary of acquisition parameters extracted from the corresponding `.DSC` file.
+
+    Returns
+    -------
+    out_data : ndarray
+        The processed data from the `.DTA` file, reshaped according to the acquisition 
+        parameters and returned as a NumPy array. If the data is complex, it combines 
+        real and imaginary parts.
+    dim_list : list
+        A list of dimension arrays that describe the shape of the data.
+
+    Notes
+    -----
+    - Binary data is read from the `.DTA` file and separated into real and imaginary 
+      components if the data is complex.
+    - The data is reshaped into the dimensions specified in the acquisition parameters.
+
+    """
 
     ## get data type
     data_type,data_is_complex = get_DTA_datatype(dsc_parameter_dict)
@@ -142,7 +205,9 @@ def read_DTA_file(dta_filepath,dsc_parameter_dict):
     return np.squeeze(out_data),dim_list
 
 def get_DTA_datatype(dsc_parameter_dict):
-    """Gets data type of data stored in .DTA by using the byteorder and data format specified in the .DSC file.
+    
+    """
+    Gets data type of data stored in .DTA by using the byteorder and data format specified in the .DSC file.
 
     Parameters
     ----------
@@ -188,6 +253,27 @@ def get_DTA_datatype(dsc_parameter_dict):
     return np.dtype(data_type),data_is_complex
 
 def get_dim_arrays(dsc_parameter_dict,dta_filepath):
+
+    """
+    Generate dimension arrays based on the acquisition parameters from a `.DSC` file.
+
+    Parameters
+    ----------
+    dsc_parameter_dict : dict
+        A dictionary containing acquisition parameters extracted from the `.DSC` file.
+    dta_filepath : Path
+        File path to the `.DTA` file, used to locate `.GF` files if needed.
+
+    Returns
+    -------
+    npts_tup : tuple
+        A tuple specifying the number of points along each dimension (Z, Y, X).
+    dim_list : list
+        A list of NumPy arrays representing the dimensions along each axis:
+        - Z-axis
+        - Y-axis
+        - X-axis
+    """
     
     # define axis lengths
     xpts,ypts,zpts = 1,1,1
@@ -219,6 +305,31 @@ def get_dim_arrays(dsc_parameter_dict,dta_filepath):
 
 def read_GF_file(ax_name,dsc_parameter_dict,dta_filepath):
 
+    """
+    Read and parse a gradient field (GF) file associated with a Bruker EPR spectrometer.
+
+    Parameters
+    ----------
+    ax_name : str
+        The axis name (e.g., 'X', 'Y') for which the GF file is being read.
+    dsc_parameter_dict : dict
+        A dictionary of acquisition parameters extracted from the `.DSC` file.
+    dta_filepath : Path
+        The file path to the `.DTA` file, used to locate the corresponding `.GF` file.
+
+    Returns
+    -------
+    gf_data : ndarray
+        The data from the `.GF` file as a NumPy array.
+
+    Raises
+    ------
+    ValueError
+        If the data format for the axis cannot be determined from the `.DSC` file.
+    FileNotFoundError
+        If the `.GF` file corresponding to the specified axis does not exist.
+    """
+
     data_format_dict = {'C':'i1','S':'i2','I':'i4','F':'f4','D':'f8'}
     byteorder_dict = {'BIG':'>','LIT':'<'}
 
@@ -239,6 +350,49 @@ def read_GF_file(ax_name,dsc_parameter_dict,dta_filepath):
 
 
 class EprData():
+
+    """
+    A class representing EPR data with methods for processing and visualization.
+
+    Attributes
+    ----------
+    data_dict : dict
+        The dictionary containing EPR data and metadata.
+    filepath : str
+        Path to the source file.
+    data : ndarray
+        The EPR data, possibly complex.
+    dims : list
+        Dimensions of the data (X, Y, Z axes).
+    acq_param : dict
+        Acquisition parameters from the experiment.
+    is_complex : bool
+        Indicates if the data is complex.
+    history : list
+        List of saved states for undo operations.
+    x : ndarray
+        X-axis data.
+    y : ndarray or None
+        Y-axis data if present.
+    g : ndarray or None
+        g-values if calculated.
+
+    Methods
+    -------
+    plot(g_scale=False, plot_type='stacked', slices='all', spacing=0.5, plot_imag=True):
+        Plots the EPR data.
+    scale_between(min_val=None, max_val=None):
+        Scales the data to a given range.
+    integral():
+        Integrates the EPR data.
+    baseline_correction(interactive=False, npts=10, method='linear', spline_smooth=1e-5, order=2):
+        Performs baseline correction on the data.
+    select_region(region):
+        Selects a specific region of the data.
+    undo():
+        Reverts to the previous state of the EprData object.
+    """
+
     
     def __init__(self,out_dict):
         

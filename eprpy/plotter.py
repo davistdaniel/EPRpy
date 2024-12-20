@@ -10,32 +10,58 @@ warnings.simplefilter('always')
 color_cycle = plt.cm.tab10.colors[:10]
 
 def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,g_scale=False):
+
     """
-    Plot one or multiple EPR data objects for comparison.
+    Plot one or multiple EPR data objects for visualization and comparison.
 
     Parameters
     ----------
-    eprdata_list : list
-        List of eprdata objects, each with attributes:
-            - filepath : str, path to the data file.
-            - data : ndarray, can be 1D or 2D, real or complex.
-            - acq_param : dict, acquisition parameters.
+    eprdata_list : list of EprData
+        A list of `EprData` objects to be plotted. Each object should have the following attributes:
+        - `filepath` (str): Path to the data file.
+        - `data` (ndarray): Data array, which can be 1D or 2D, real or complex.
+        - `acq_param` (dict): Acquisition parameters.
     
-    plot_type : str, optional
-        Type of plot for 2D data. Options are:
-            'stacked' (default), 'superimposed', 'surf', or 'contour'.
+    plot_type : {'stacked', 'superimposed', 'surf', 'contour'}, optional
+        The type of plot to generate for 2D data. Options are:
+        - 'stacked' (default): Stacks slices with specified spacing.
+        - 'superimposed': Overlays all slices.
+        - 'surf': Creates a 3D surface plot.
+        - 'contour': Creates a 2D contour plot.
 
-    slices : str or list, optional
-        Specifies which slices to plot if data is 2D. Options:
-            'all' (default) for all slices, an integer list for specific slices, or a range.
+    slices : {'all', list, range}, optional
+        Specifies which slices to plot for 2D data. Options include:
+        - 'all' (default): Plots all slices.
+        - A list of integers: Specifies the indices of slices to plot.
+        - A range object: Specifies a range of slice indices.
 
     spacing : float, optional
         Spacing between slices for 'stacked' or 'superimposed' plots. Default is 0.5.
 
+    plot_imag : bool, optional
+        If `True`, includes the imaginary part of the data in the plot. Default is `True`.
+
+    g_scale : bool, optional
+        If `True` and `EprData.g` is not `None`, plots the data on a g-factor scale 
+        and inverts the x-axis. Default is `False`.
+
     Returns
     -------
-    None
+    fig : matplotlib.figure.Figure
+        The figure object containing the plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - For 1D data, all `EprData` objects in the list must have 1D data.
+    - For 2D data, all `EprData` objects in the list must have 2D data.
+    - The function automatically handles plotting based on the data dimensions 
+      (1D or 2D) and the specified plot type.
+    - If `g_scale` is enabled and `EprData.g` is available, the x-axis is inverted 
+      for better visualization of g-factor values.
     """
+
     
     if not isinstance(eprdata_list, list):
         eprdata_list = [eprdata_list]  # Convert single object to a list for uniform handling
@@ -62,6 +88,38 @@ def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_im
 
 
 def plot_1d(eprdata_list,g_scale,plot_imag=True):
+
+    """
+    Plot 1D EPR data from multiple `EprData` objects.
+
+    Parameters
+    ----------
+    eprdata_list : list of EprData
+        A list of `EprData` objects to be plotted. Each object should have the following attributes:
+        - `data` (ndarray): 1D data array (real or complex).
+        - `x` (ndarray): x-axis values corresponding to the data.
+        - `g` (ndarray, optional): g-factor values, if applicable.
+    
+    g_scale : bool
+        If `True`, plots the data on a g-factor scale (using `g` if available). Default is `False`.
+
+    plot_imag : bool, optional
+        If `True`, includes the imaginary part of the data in the plot for complex data. Default is `True`.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - If `g_scale` is enabled and the `g` attribute is present in the `EprData` object, 
+      it will be used for the x-axis. Otherwise, the x-values (`x`) will be used.
+    - Complex data is plotted with the real and imaginary parts (if `plot_imag` is `True`).
+    - The function uses a cycling color scheme for each plot in `eprdata_list`.
+    """
     
     c_idx = -1
 
@@ -95,6 +153,53 @@ def plot_1d(eprdata_list,g_scale,plot_imag=True):
         
 
 def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
+
+    """
+    Plot 2D EPR data from multiple `EprData` objects.
+
+    Parameters
+    ----------
+    eprdata_list : list of EprData
+        A list of `EprData` objects to be plotted. Each object should have the following attributes:
+        - `data` (ndarray): 2D data array.
+        - `x` (ndarray): x-axis values corresponding to the data.
+        - `y` (ndarray): y-axis values corresponding to the data.
+        - `g` (ndarray, optional): g-factor values, if applicable.
+    
+    g_scale : bool
+        If `True`, plots the data on a g-factor scale (using `g` if available). Default is `False`.
+
+    plot_type : {'stacked', 'superimposed', 'surf', 'pcolor'}, optional
+        The type of plot to generate for the 2D data. Options are:
+        - 'stacked' (default): Stacks slices with specified spacing.
+        - 'superimposed': Overlays slices on the same plot.
+        - 'surf': Creates a 3D surface plot.
+        - 'pcolor': Creates a pseudocolor plot.
+
+    slices : {'all', list, range}, optional
+        Specifies which slices to plot for the 2D data. Options include:
+        - 'all' (default): Plots all slices.
+        - A list of integers: Specifies the indices of slices to plot.
+        - A range object: Specifies a range of slice indices.
+
+    spacing : float, optional
+        Spacing between slices for 'stacked' and 'superimposed' plots. Default is 0.5.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - For 2D data, the function selects slices based on the `slices` parameter and 
+      visualizes them using one of the specified plot types.
+    - The color scheme for the slices is determined by a gradual color map.
+    - If `g_scale` is enabled and the `g` attribute is available in the `EprData` object, 
+      it will be used for the x-axis. Otherwise, the x-values (`x`) will be used.
+    """
 
     data = eprdata_list[0].data
     if g_scale:
@@ -136,6 +241,40 @@ def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
 
 def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
 
+    """
+    Create a stacked plot for 2D EPR data slices.
+
+    Parameters
+    ----------
+    data : ndarray
+        The 2D data array from which the slices will be plotted.
+    x : ndarray
+        The x-axis values corresponding to the data.
+    y : ndarray
+        The y-axis values corresponding to the data.
+    selected_slices : list of int
+        A list of slice indices to be plotted.
+    slice_colors : ndarray
+        An array of colors to be used for each slice.
+    spacing : float
+        The vertical spacing between stacked slices.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the stacked plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - This function plots each slice of the 2D data array, offset vertically by the 
+      specified `spacing` to create a stacked appearance.
+    - The slices are drawn with colors from the `slice_colors` array, and the transparency 
+      is controlled by the `alpha` parameter.
+    - Complex data is plotted using the real part only.
+    """
+
     fig,ax = plt.subplots()
     for idx, slice_idx in enumerate(selected_slices):
         slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
@@ -144,6 +283,38 @@ def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
     return fig,ax
 
 def surf_plot(data,x,y,slice_len,selected_slices):
+
+    """
+    Create a 3D surface plot for selected slices of 2D EPR data.
+
+    Parameters
+    ----------
+    data : ndarray
+        The 2D data array from which the slices will be plotted.
+    x : ndarray
+        The x-axis values corresponding to the data.
+    y : ndarray
+        The y-axis values corresponding to the data.
+    slice_len : int
+        The length of each slice along the x-axis.
+    selected_slices : list of int
+        A list of slice indices to be plotted.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the surface plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - This function creates a 3D surface plot with `x` and `y` as the axes, and the 
+      corresponding data values (`Z`) from the selected slices.
+    - Complex data is plotted using the real part only.
+    - A color bar is added to the plot to indicate the scale of the surface values.
+    """
+
     fig,ax = plt.subplots(subplot_kw={"projection": "3d"})
     X, Y = np.meshgrid(x[range(slice_len)], y[selected_slices])
     Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
@@ -153,6 +324,39 @@ def surf_plot(data,x,y,slice_len,selected_slices):
     return fig,ax
 
 def superimposed_plot(data,x,y,selected_slices,slice_colors):
+
+    """
+    Create a superimposed plot for selected slices of 2D EPR data.
+
+    Parameters
+    ----------
+    data : ndarray
+        The 2D data array from which the slices will be plotted.
+    x : ndarray
+        The x-axis values corresponding to the data.
+    y : ndarray
+        The y-axis values corresponding to the data.
+    selected_slices : list of int
+        A list of slice indices to be plotted.
+    slice_colors : ndarray
+        An array of colors to be used for each slice.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the superimposed plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - This function overlays all selected slices onto a single plot.
+    - Complex data is plotted using the real part only.
+    - Each slice is plotted with a different color from the `slice_colors` array, 
+      and transparency is controlled by the `alpha` parameter.
+    - Only the first slice is labeled in the legend, others are excluded using "_nolegend_".
+    """
+
     fig,ax = plt.subplots()
     for idx, slice_idx in enumerate(selected_slices):
         slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
@@ -162,6 +366,37 @@ def superimposed_plot(data,x,y,selected_slices,slice_colors):
 
 
 def pcolor_plot(data,x,y,slice_len,selected_slices):
+
+    """
+    Create a pseudocolor plot for selected slices of 2D EPR data.
+
+    Parameters
+    ----------
+    data : ndarray
+        The 2D data array from which the slices will be plotted.
+    x : ndarray
+        The x-axis values corresponding to the data.
+    y : ndarray
+        The y-axis values corresponding to the data.
+    slice_len : int
+        The length of each slice along the x-axis.
+    selected_slices : list of int
+        A list of slice indices to be plotted.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the pseudocolor plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    Notes
+    -----
+    - This function creates a pseudocolor plot (a 2D heatmap) for the selected slices of the data.
+    - Complex data is plotted using the real part only.
+    - A color bar is added to the plot to indicate the scale of the values.
+    """
+
     fig,ax = plt.subplots()
     X, Y = np.meshgrid(x[range(slice_len)], y[selected_slices])
     Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
@@ -171,6 +406,31 @@ def pcolor_plot(data,x,y,slice_len,selected_slices):
     return fig,ax
 
 def interactive_points_selector(x,y):
+
+    """
+    Interactively select points from a plot of 1D EPR data.
+
+    Parameters
+    ----------
+    x : ndarray
+        The x-axis values corresponding to the data.
+    y : ndarray
+        The y-axis values corresponding to the data.
+
+    Returns
+    -------
+    selected_points : ndarray
+        An array of the indices of the selected points, sorted in ascending order.
+
+    Notes
+    -----
+    - This function creates an interactive plot where points can be selected by left-clicking 
+      on the plot. After selecting all desired points, the user can click the 'Done' button 
+      to finalize the selection.
+    - The function returns the indices of the selected points, sorted in the order of their 
+      x-axis values.
+    """
+    
     fig,ax =plt.subplots()
     ax.plot(x,y)
     ax.set_title('Select points by left click. Click Done after selecting all points.')
