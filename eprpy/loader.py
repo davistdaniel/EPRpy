@@ -261,7 +261,8 @@ class EprData():
     
     def plot(self,g_scale=False,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
 
-        eprplot(self,plot_type,slices,spacing,plot_imag,g_scale=g_scale)
+        fig,ax = eprplot(self,plot_type,slices,spacing,plot_imag,g_scale=g_scale)
+        return fig,ax
 
     def scale_between(self,min_val=None,max_val=None):
 
