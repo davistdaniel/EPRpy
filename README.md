@@ -4,7 +4,7 @@
 
 ## About
 
-EPRPy is a python library to streamline handling, inspection and processing of Electron Paramagnetic resonance data.
+EPRPy is a python library to streamline handling, inspection and processing of Electron Paramagnetic resonance spectroscopic data.
 The library is born out of a collection of scripts I wrote for routine analysis of EPR data and simple presentation of results  during my doctoral work. EPRPy might be of use to you if you need to read, plot and export EPR data acquired on Bruker EPR spectrometers for routine analysis. EPRPy focusses on ease of use, generating quick plots for data inspection and features automated processing workflows for specific EPR experiments.
 
 ## Installation
@@ -14,9 +14,9 @@ Then, type in a terminal :
 
 `python -m pip install .`
 
-## Doumentation
+## Documentation
 
-Coming soon.
+Pre-built documentation will be updated soon, source files for building the docs using sphinx can be found in docs/sources.
 
 ## Features
 
