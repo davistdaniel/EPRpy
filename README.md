@@ -9,16 +9,23 @@ The library is born out of a collection of scripts I wrote for routine analysis 
 
 ## Installation
 
-Clone or download this repositiory and then navigate the folder where setup.py file is present.
+Clone or download this repository and then navigate the folder where setup.py file is present.
 Then, type in a terminal :
 
 `python -m pip install .`
+
+## Doumentation
+
+Coming soon.
 
 ## Features
 
 * Read and export EPR data.
 * Basic processing capabilities such as interactive baseline correction, integration etc.
 * Generate quick plots of 1D and 2D datasets, compare different datasets.
+
+## Upcoming 
+* Automated workflows for specific EPR experiments
 
 ## Limitations
 * Supports reading of files only in Bruker BES3T format v.1.2 and upto 2D datasets.
