@@ -1,6 +1,6 @@
 # EPRpy 0.9.0
 
-![eprpy_logo](docs/source/images/eprpy_logo.png){width=30%}
+![eprpy_logo](docs/source/images/eprpy_logo.png)
 
 ## About
 
