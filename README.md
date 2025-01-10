@@ -16,7 +16,7 @@ Then, type in a terminal :
 
 ## Documentation
 
-Pre-built documentation will be updated soon, source files for building the docs using sphinx can be found in docs/source/ .
+For EPRpy documentation, see ![here](https://davistdaniel.github.io/EPRpy/). Source files for building the docs using sphinx can be found in docs/source/ .
 
 ## Features
 
