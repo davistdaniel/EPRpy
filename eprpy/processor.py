@@ -220,7 +220,7 @@ def _baseline_correct_2d(x,y,interactive=False,
     if interactive:
         baseline_points = interactive_points_selector(x,y[0])
     else:
-        baseline_points=np.concatenate([np.arange(npts), np.arange(len(y) - npts, len(y))])
+        baseline_points=np.concatenate([np.arange(npts), np.arange(len(y[0]) - npts, len(y[0]))])
     
     baselines = np.empty_like(y)
     if baseline_points is not None and len(baseline_points) > 0:

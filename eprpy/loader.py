@@ -426,11 +426,11 @@ class EprData():
         
         _integrate(self)
 
-    def baseline_correction(eprdata,interactive=False,
+    def baseline_correct(self,interactive=False,
                       npts=10,method='linear',spline_smooth=1e-5,
                       order=2):
         
-        _baseline_correct(eprdata,interactive,
+        _baseline_correct(self,interactive,
                           npts,method,spline_smooth,order)
         
     def select_region(self,region):
