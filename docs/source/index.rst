@@ -67,10 +67,11 @@ Using EPRpy
 ----------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: User guide
 
 
    loading
+   processing
    EprData
 
