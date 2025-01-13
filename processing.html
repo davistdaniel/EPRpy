@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Operations on data &#8212; EPRpy 0.9.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="EprData class" href="EprData.html" />
+    <link rel="prev" title="Loading EPR data" href="loading.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="operations-on-data">
+<h1>Operations on data<a class="headerlink" href="#operations-on-data" title="Link to this heading">¶</a></h1>
+<p>After loading the data into an <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object, following functions can be used to perform various operations on the data. Since the data is stored as NumPy arrays, all artihmetic operations
+whihc are valid on NumPy arrays are also valid on  attributes of <code class="docutils literal notranslate"><span class="pre">EprData</span></code> which are NumPy arrays, such as <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>.
+Please note that, unless otherwise specified, all operations on the data are done in place i.e. a new object is not returned. After each operation, a history entry is added to the history of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.
+Calling the <code class="docutils literal notranslate"><span class="pre">undo</span></code> method of any <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object will return the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object before the last operation on the data.</p>
+<section id="scaling">
+<h2>Scaling<a class="headerlink" href="#scaling" title="Link to this heading">¶</a></h2>
+<p>Data in an <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object can be scaled between two values using the <code class="docutils literal notranslate"><span class="pre">scale_between</span></code> method.
+There are two optional inputs <code class="docutils literal notranslate"><span class="pre">min_val</span></code> and <code class="docutils literal notranslate"><span class="pre">max_val</span></code>, which correspond to the minimum and maximum value of the range within which the data will be scaled.
+If no inputs are given, the data is scaled between 0 and 1.</p>
+</section>
+<section id="computing-integrals">
+<h2>Computing Integrals<a class="headerlink" href="#computing-integrals" title="Link to this heading">¶</a></h2>
+<p>Integrals can be calculated using the <code class="docutils literal notranslate"><span class="pre">integral</span></code> method of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> class.
+Since CW-EPR data is usually acuqired as firtst-derivatives, the function should be called twice for a double integral calculation.</p>
+</section>
+<section id="baseline-correction">
+<h2>Baseline Correction<a class="headerlink" href="#baseline-correction" title="Link to this heading">¶</a></h2>
+<p>Baseline correction in EPRpy supports 1D and 2D data and allows for interactive selection of baseline points. Baseline points in case of 2D data are selected using the first slice of the data.
+The baseline can be fitted using linear, polynomial, or spline methods. To correct the baseline, <code class="docutils literal notranslate"><span class="pre">baseline_correct</span></code> method of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> class can be used.
+Basline correction accepts various inputs :</p>
+<ul class="simple">
+<li><p><em>interactive</em> : If set to True, this will plot the data with an option to sleect points interactively. These points will then be used for the calculatinh the baseline.</p></li>
+<li><p><em>npts</em> : Another way of specifying points. When <em>interactive</em> is set to False, npts is equal to the number of points at the start and end of the data which is used for baseline correction.</p></li>
+<li><p><em>method</em> :  Should be one of ‘linear’, ‘polynomial’ and ‘spline’.</p></li>
+<li><p><em>order</em> : Specifies the polynomial order in case of <em>method</em> ‘polynomial’.</p></li>
+<li><p><em>spline_smooth</em> : Smoothing factor of the spline, in case of <em>method</em> ‘spline’.</p></li>
+</ul>
+</section>
+<section id="selecting-a-region">
+<h2>Selecting a region<a class="headerlink" href="#selecting-a-region" title="Link to this heading">¶</a></h2>
+<p>This operation returns a new <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object, which corresponds to selected region of the data (or spectrum). The operation is always carried out on the last axis of the data
+and needs a list of indices as input which corresponds to the desired region.</p>
+</section>
+<section id="undoing-changes">
+<h2>Undoing changes<a class="headerlink" href="#undoing-changes" title="Link to this heading">¶</a></h2>
+<p>Any data operation can be undone and the original <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object just before the operation can be obtained by using the <code class="docutils literal notranslate"><span class="pre">undo</span></code> method of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> class.
+Note that any previous <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object can be accessed by using the <code class="docutils literal notranslate"><span class="pre">history</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">EPRpy</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="loading.html">Loading EPR data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Operations on data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EprData.html">EprData class</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="loading.html" title="previous chapter">Loading EPR data</a></li>
+      <li>Next: <a href="EprData.html" title="next chapter">EprData class</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Davis Thomas Daniel.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/processing.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -15,4 +15,4 @@ Data can be loaded into an ``EprData`` object by using the ``load(filepath)`` fu
   epr_data = epr.load('tempo.DSC')
 
 
-``epr_data`` is an :doc:`EprData <EprData>` data object with various accessible attributes. For instance the loaded data can be accessed by ``epr_data.data``.
+``epr_data`` is an :doc:`EprData <EprData>` data object with various accessible attributes. For instance. the loaded data can be accessed by ``epr_data.data``.
