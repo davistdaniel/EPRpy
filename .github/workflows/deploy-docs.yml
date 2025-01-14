@@ -17,6 +17,11 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+          
       - name: Install dependencies
         run: |
           pip install .
