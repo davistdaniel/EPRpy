@@ -26,7 +26,7 @@ jobs:
         run: |
           pip install .
           pip install sphinx
-          pip install nbsphinx
+          pip install nbsphinx furo
           pip install pygments ipython --upgrade
 
       - name: Build documentation
