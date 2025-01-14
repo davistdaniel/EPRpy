@@ -2,6 +2,8 @@
 
 ![eprpy_logo](docs/source/images/eprpy_logo.png)
 
+![Static Badge](https://img.shields.io/badge/Version-0.9.0-blue?label=Version) ![Website](https://img.shields.io/website?url=https%3A%2F%2Fdavistdaniel.github.io%2FEPRpy%2F&up_message=online&down_message=offline&label=Docs) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/davistdaniel/EPRpy/deploy-docs.yml?label=Docs) ![GitHub last commit](https://img.shields.io/github/last-commit/davistdaniel/EPRpy) 
+
 ## About
 
 EPRPy is a python library to streamline handling, inspection and processing of Electron Paramagnetic resonance spectroscopic data.
