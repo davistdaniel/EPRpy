@@ -442,18 +442,6 @@ class EprData():
         out_dict['data'] =  out_dict['data'][...,region]
 
         return EprData(out_dict)
-    
-    def undo(self):
-        """
-        Undo the processing step done on an EprData object by returning the previous EprData object.
-
-        Returns
-        -------
-        EprData
-            Returns the last-saved EprData object from EprData.history
-        """
-
-        return self.history[-1][1]
 
         
         
