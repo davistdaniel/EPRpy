@@ -12,8 +12,10 @@
     <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="Examples.html" />
     <link rel="prev" title="Operations on data" href="processing.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -38,10 +40,10 @@
 <ul class="simple">
 <li><p><strong>data_dict</strong> : A python dictionary with the data, acquisition parameters, filepath etc.</p></li>
 <li><p><strong>filepath</strong> : The filepath of the .DSC or .DTA file</p></li>
-<li><p><strong>data</strong> : The raw data which is read from the .DTA file.</p></li>
+<li><p><strong>data</strong> : The raw data which is read from the .DTA file stored as a NumPy array</p></li>
 <li><p><strong>dims</strong> : A list of arrays which define each dimension of the data. For instance, for a simple 1D-EPR spectrum, dims contains the field values.</p></li>
-<li><p><strong>x</strong> : Array corresponding to the abscissa of the data</p></li>
-<li><p><strong>y</strong> : Array corresponding to the ordinate of the data (only defined in case of 2-D data, otherwise is <code class="docutils literal notranslate"><span class="pre">None</span></code>.)</p></li>
+<li><p><strong>x</strong> : NumPy array corresponding to the abscissa of the data</p></li>
+<li><p><strong>y</strong> : NumPy array corresponding to the ordinate of the data (only defined in case of 2-D data, otherwise is <code class="docutils literal notranslate"><span class="pre">None</span></code>.)</p></li>
 <li><p><strong>is_complex</strong> : A boolean flag which indicates if the data is of complex type (i.e. also contains imaginary values)</p></li>
 <li><p><strong>acq_param</strong> : A python dictionary of acquisition parameters which were read from the .DSC file.</p></li>
 <li><p><strong>history</strong> : Describes the history of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object. This attribute is a list of lists, with each element in the main list containing a string desrcribing the processing step and the corresponding <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.</p></li>
@@ -79,6 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="loading.html">Loading EPR data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="processing.html">Operations on data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">EprData class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
 </ul>
 
 <div class="relations">
@@ -86,6 +89,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="processing.html" title="previous chapter">Operations on data</a></li>
+      <li>Next: <a href="Examples.html" title="next chapter">Examples</a></li>
   </ul></li>
 </ul>
 </div>

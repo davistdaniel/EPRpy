@@ -12,6 +12,7 @@
     <script src="_static/documentation_options.js?v=39bb1c6d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="EprData class" href="EprData.html" />
@@ -35,20 +36,25 @@
             
   <section id="operations-on-data">
 <h1>Operations on data<a class="headerlink" href="#operations-on-data" title="Link to this heading">¶</a></h1>
-<p>After loading the data into an <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object, following functions can be used to perform various operations on the data. Since the data is stored as NumPy arrays, all artihmetic operations
-whihc are valid on NumPy arrays are also valid on  attributes of <code class="docutils literal notranslate"><span class="pre">EprData</span></code> which are NumPy arrays, such as <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>.
-Please note that, unless otherwise specified, all operations on the data are done in place i.e. a new object is not returned. After each operation, a history entry is added to the history of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.
+<p>After loading the data into an <a class="reference internal" href="EprData.html"><span class="doc">EprData</span></a> object, following functions can be used to perform various operations on the data. Since the data is stored as NumPy arrays, all artihmetic operations
+which are valid on NumPy arrays are also valid on  attributes of <a class="reference internal" href="EprData.html"><span class="doc">EprData</span></a> which are NumPy arrays, such as <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unless otherwise specified, all operations on the data are done in place i.e. a new object is not returned. After each operation, a history entry is added to the history of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.
 Calling the <code class="docutils literal notranslate"><span class="pre">undo</span></code> method of any <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object will return the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object before the last operation on the data.</p>
+</div>
 <section id="scaling">
 <h2>Scaling<a class="headerlink" href="#scaling" title="Link to this heading">¶</a></h2>
 <p>Data in an <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object can be scaled between two values using the <code class="docutils literal notranslate"><span class="pre">scale_between</span></code> method.
 There are two optional inputs <code class="docutils literal notranslate"><span class="pre">min_val</span></code> and <code class="docutils literal notranslate"><span class="pre">max_val</span></code>, which correspond to the minimum and maximum value of the range within which the data will be scaled.
 If no inputs are given, the data is scaled between 0 and 1.</p>
+<p>See <a class="reference external" href="notebooks/examples.html#Scaling-data">how to scale data between two values</a>.</p>
 </section>
 <section id="computing-integrals">
 <h2>Computing Integrals<a class="headerlink" href="#computing-integrals" title="Link to this heading">¶</a></h2>
 <p>Integrals can be calculated using the <code class="docutils literal notranslate"><span class="pre">integral</span></code> method of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> class.
 Since CW-EPR data is usually acuqired as firtst-derivatives, the function should be called twice for a double integral calculation.</p>
+<p>See <a class="reference external" href="notebooks/examples.html#Computing-integrals">computing integrals</a>.</p>
 </section>
 <section id="baseline-correction">
 <h2>Baseline Correction<a class="headerlink" href="#baseline-correction" title="Link to this heading">¶</a></h2>
@@ -62,16 +68,17 @@ Basline correction accepts various inputs :</p>
 <li><p><em>order</em> : Specifies the polynomial order in case of <em>method</em> ‘polynomial’.</p></li>
 <li><p><em>spline_smooth</em> : Smoothing factor of the spline, in case of <em>method</em> ‘spline’.</p></li>
 </ul>
+<p>See a <a class="reference external" href="notebooks/examples.html#Baseline-correction">baseline correction example</a>.</p>
 </section>
 <section id="selecting-a-region">
 <h2>Selecting a region<a class="headerlink" href="#selecting-a-region" title="Link to this heading">¶</a></h2>
 <p>This operation returns a new <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object, which corresponds to selected region of the data (or spectrum). The operation is always carried out on the last axis of the data
-and needs a list of indices as input which corresponds to the desired region.</p>
+and needs a list of indices as input which corresponds to the desired region. See <a class="reference external" href="notebooks/examples.html#Selecting-a-region">selecting a region</a>.</p>
 </section>
-<section id="undoing-changes">
-<h2>Undoing changes<a class="headerlink" href="#undoing-changes" title="Link to this heading">¶</a></h2>
-<p>Any data operation can be undone and the original <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object just before the operation can be obtained by using the <code class="docutils literal notranslate"><span class="pre">undo</span></code> method of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> class.
-Note that any previous <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object can be accessed by using the <code class="docutils literal notranslate"><span class="pre">history</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.</p>
+<section id="history-of-data-operations">
+<h2>History of data operations<a class="headerlink" href="#history-of-data-operations" title="Link to this heading">¶</a></h2>
+<p>Any previous <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object can be accessed by using the <code class="docutils literal notranslate"><span class="pre">history</span></code> attribute of the <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object. Each <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object stores history of all data operations and the corresponding <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object in a list of lists.
+The first item in each list is the description of the data operation and the second item is the corresponding <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object. See <a class="reference external" href="notebooks/examples.html#History-of-data-operations">how to access history</a>.</p>
 </section>
 </section>
 
@@ -106,6 +113,7 @@ Note that any previous <code class="docutils literal notranslate"><span class="p
 <li class="toctree-l1"><a class="reference internal" href="loading.html">Loading EPR data</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Operations on data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EprData.html">EprData class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
 </ul>
 
 <div class="relations">

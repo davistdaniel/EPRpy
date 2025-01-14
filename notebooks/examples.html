@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Importing EPRpy &#8212; EPRpy 0.9.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Examples" href="../Examples.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="Importing-EPRpy">
+<h1>Importing EPRpy<a class="headerlink" href="#Importing-EPRpy" title="Link to this heading">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import eprpy as epr
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Data-(1D)">
+<h1>Data (1D)<a class="headerlink" href="#Data-(1D)" title="Link to this heading">¶</a></h1>
+<section id="Loading-data">
+<h2>Loading data<a class="headerlink" href="#Loading-data" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tempo = epr.load(&#39;tempo.DSC&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>type(tempo) # tempo is an EprData object
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+eprpy.loader.EprData
+</pre></div></div>
+</div>
+</section>
+<section id="Plotting">
+<h2>Plotting<a class="headerlink" href="#Plotting" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Every <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object has a plot method for making quick plots for inspection.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fig,ax = tempo.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_8_0.png" src="../_images/notebooks_examples_8_0.png" />
+</div>
+</div>
+<section id="Formatting-plots">
+<h3>Formatting plots<a class="headerlink" href="#Formatting-plots" title="Link to this heading">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ax.set_xlabel(&#39;Magnetic Field [Gauss]&#39;) # set x axis label
+fig
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_10_0.png" src="../_images/notebooks_examples_10_0.png" />
+</div>
+</div>
+</section>
+<section id="Use-attributes-directly-to-plot">
+<h3>Use attributes directly to plot<a class="headerlink" href="#Use-attributes-directly-to-plot" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Alternatively, plots can be made directly using matplotlib and <code class="docutils literal notranslate"><span class="pre">EprData</span></code> attributes with full control over formatting.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+fig,ax = plt.subplots(figsize=(8,4))
+ax.plot(tempo.x/10,tempo.data,color=&#39;black&#39;) # convert Gauss to mT
+ax.set_xlabel(&#39;Magnetic Field [mT]&#39;) # set x axis label
+_=ax.set_yticks([]) # hide intensity
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_13_0.png" src="../_images/notebooks_examples_13_0.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="Operations-on-Data">
+<h1>Operations on Data<a class="headerlink" href="#Operations-on-Data" title="Link to this heading">¶</a></h1>
+<section id="Scaling-data">
+<h2>Scaling data<a class="headerlink" href="#Scaling-data" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import EPRpy
+import eprpy as epr
+
+# load data
+tempo = epr.load(&#39;tempo.DSC&#39;)
+
+print(&#39;Before scaling :&#39;)
+fig,ax = tempo.plot()
+
+# scale between -1 and 1
+tempo.scale_between(-1,1)
+
+print(&#39;After scaling : &#39;)
+fig,ax = tempo.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Before scaling :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_16_1.png" src="../_images/notebooks_examples_16_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+After scaling :
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_16_3.png" src="../_images/notebooks_examples_16_3.png" />
+</div>
+</div>
+</section>
+<section id="Baseline-correction">
+<h2>Baseline correction<a class="headerlink" href="#Baseline-correction" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import EPRpy
+import eprpy as epr
+
+# load data
+tempo = epr.load(&#39;tempo.DSC&#39;)
+
+# linear baseline correction
+tempo.baseline_correct() # default is linear baseline correction using 10 points at the start and end of the data.
+tempo.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_18_0.png" src="../_images/notebooks_examples_18_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 640x480 with 1 Axes&gt;, &lt;Axes: &gt;)
+</pre></div></div>
+</div>
+</section>
+<section id="Computing-integrals">
+<h2>Computing integrals<a class="headerlink" href="#Computing-integrals" title="Link to this heading">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import EPRpy
+import eprpy as epr
+
+# load data
+tempo = epr.load(&#39;tempo.DSC&#39;)
+
+# baseline correction and integration
+tempo.baseline_correct()
+tempo.integral()
+
+# plot the absorption signal
+tempo.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_20_0.png" src="../_images/notebooks_examples_20_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(&lt;Figure size 640x480 with 1 Axes&gt;, &lt;Axes: &gt;)
+</pre></div></div>
+</div>
+</section>
+<section id="Selecting-a-region">
+<h2>Selecting a region<a class="headerlink" href="#Selecting-a-region" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>For this example, we assume that the desired region is the low field hyperfine line.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import EPRpy
+import eprpy as epr
+
+# load data
+tempo = epr.load(&#39;tempo.DSC&#39;)
+
+# Plot the data using an array with unity spacing to find corresponding indices
+import matplotlib.pyplot as plt
+print(&#39;Full spectrum : &#39;)
+_=plt.plot(tempo.data)
+
+# make a new EprData object corresponding to the desired region
+tempo_region = tempo.select_region(range(550,850)) # indices from 0 to 900
+
+# selected region, note that the the new EprData object tempo_region only has the data corresponding to this region
+print(&#39;Selected region : &#39;)
+fig,ax = tempo_region.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Full spectrum :
+Selected region :
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_23_1.png" src="../_images/notebooks_examples_23_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_23_2.png" src="../_images/notebooks_examples_23_2.png" />
+</div>
+</div>
+</section>
+<section id="History-of-data-operations">
+<h2>History of data operations<a class="headerlink" href="#History-of-data-operations" title="Link to this heading">¶</a></h2>
+<p>EPRpy allows for keeping a log of data operations done on an EprData object, as long as in-built functions are used.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># import EPRpy
+import eprpy as epr
+
+# load data
+tempo = epr.load(&#39;tempo.DSC&#39;)
+
+# do some operations
+tempo.scale_between(-1,1)
+tempo.baseline_correct()
+tempo.integral()
+</pre></div>
+</div>
+</div>
+<section id="Access-history">
+<h3>Access history<a class="headerlink" href="#Access-history" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Each <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object stores history of all data operations and the corresponding <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object in a list of lists. The first item in each list is the description of the data operation and the second item is the corresponding <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object.</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>tempo.history
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[&#39;2025-01-14 09:41:40.730990 : Data loaded from tempo.DSC.&#39;,
+  &lt;eprpy.loader.EprData at 0x12168faa0&gt;],
+ [&#39;2025-01-14 09:41:40.731418 : Data scaled between -1 and 1.&#39;,
+  &lt;eprpy.loader.EprData at 0x1543345c0&gt;],
+ [&#39;2025-01-14 09:41:40.731745 : Baseline corrected&#39;,
+  &lt;eprpy.loader.EprData at 0x12779efc0&gt;],
+ [&#39;2025-01-14 09:41:40.732140 : Integral calculated&#39;,
+  &lt;eprpy.loader.EprData at 0x15424c740&gt;]]
+</pre></div></div>
+</div>
+<ul class="simple">
+<li><p>To plot or access a specific <code class="docutils literal notranslate"><span class="pre">EprData</span></code> from the history, simply use indexing. For instance, to view the original data again, plot the first item in history:</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(tempo.history[0][0])
+fig,ax = tempo.history[0][1].plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2025-01-14 09:41:40.730990 : Data loaded from tempo.DSC.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_31_1.png" src="../_images/notebooks_examples_31_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(tempo.history[2][0])
+fig,ax = tempo.history[2][1].plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2025-01-14 09:41:40.731745 : Baseline corrected
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_examples_32_1.png" src="../_images/notebooks_examples_32_1.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">EPRpy</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../loading.html">Loading EPR data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processing.html">Operations on data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../EprData.html">EprData class</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../Examples.html">Examples</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../Examples.html">Examples</a><ul>
+      <li>Previous: <a href="../Examples.html" title="previous chapter">Examples</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Davis Thomas Daniel.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/notebooks/examples.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

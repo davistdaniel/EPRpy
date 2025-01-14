@@ -1,7 +1,7 @@
 Loading EPR data
 ============================
 
-For loading data acuqired on Bruker spectrometers, **EPRpy** needs the path to either the ``.DSC`` or ``.DTA`` file. The ``.DSC`` and ``.DTA`` 
+For loading data acquired on Bruker spectrometers, **EPRpy** needs the path to either the ``.DSC`` or ``.DTA`` file. The ``.DSC`` and ``.DTA`` 
 must be in the same folder. In case of some 2D-data, an accompanying ``.GF`` is also required in the same folder.
 
 Data can be loaded into an ``EprData`` object by using the ``load(filepath)`` function as follows.

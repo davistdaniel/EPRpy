@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Loading EPR data &#8212; EPRpy 0.9.0 documentation</title>
+    <title>Examples &#8212; EPRpy 0.9.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
@@ -13,10 +13,12 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Operations on data" href="processing.html" />
-    <link rel="prev" title="Welcome to EPRpy’s documentation" href="index.html" />
+    <link rel="next" title="Importing EPRpy" href="notebooks/examples.html" />
+    <link rel="prev" title="EprData class" href="EprData.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -34,19 +36,27 @@
 
           <div class="body" role="main">
             
-  <section id="loading-epr-data">
-<h1>Loading EPR data<a class="headerlink" href="#loading-epr-data" title="Link to this heading">¶</a></h1>
-<p>For loading data acquired on Bruker spectrometers, <strong>EPRpy</strong> needs the path to either the <code class="docutils literal notranslate"><span class="pre">.DSC</span></code> or <code class="docutils literal notranslate"><span class="pre">.DTA</span></code> file. The <code class="docutils literal notranslate"><span class="pre">.DSC</span></code> and <code class="docutils literal notranslate"><span class="pre">.DTA</span></code>
-must be in the same folder. In case of some 2D-data, an accompanying <code class="docutils literal notranslate"><span class="pre">.GF</span></code> is also required in the same folder.</p>
-<p>Data can be loaded into an <code class="docutils literal notranslate"><span class="pre">EprData</span></code> object by using the <code class="docutils literal notranslate"><span class="pre">load(filepath)</span></code> function as follows.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import EPRpy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">eprpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">epr</span>
-
-<span class="c1"># Load data by providing path to .DSC or .DTA file</span>
-<span class="n">epr_data</span> <span class="o">=</span> <span class="n">epr</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;tempo.DSC&#39;</span><span class="p">)</span>
-</pre></div>
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/examples.html">Importing EPRpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/examples.html#Data-(1D)">Data (1D)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Loading-data">Loading data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Plotting">Plotting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/examples.html#Operations-on-Data">Operations on Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Scaling-data">Scaling data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Baseline-correction">Baseline correction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Computing-integrals">Computing integrals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Selecting-a-region">Selecting a region</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#History-of-data-operations">History of data operations</a></li>
+</ul>
+</li>
+</ul>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">epr_data</span></code> is an <a class="reference internal" href="EprData.html"><span class="doc">EprData</span></a> data object with various accessible attributes. For instance. the loaded data can be accessed by <code class="docutils literal notranslate"><span class="pre">epr_data.data</span></code>.</p>
 </section>
 
 
@@ -77,18 +87,18 @@ must be in the same folder. In case of some 2D-data, an accompanying <code class
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Loading EPR data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loading.html">Loading EPR data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="processing.html">Operations on data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EprData.html">EprData class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to <strong>EPRpy</strong>’s documentation</a></li>
-      <li>Next: <a href="processing.html" title="next chapter">Operations on data</a></li>
+      <li>Previous: <a href="EprData.html" title="previous chapter">EprData class</a></li>
+      <li>Next: <a href="notebooks/examples.html" title="next chapter">Importing EPRpy</a></li>
   </ul></li>
 </ul>
 </div>
@@ -112,7 +122,7 @@ must be in the same folder. In case of some 2D-data, an accompanying <code class
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
-      <a href="_sources/loading.rst.txt"
+      <a href="_sources/Examples.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
