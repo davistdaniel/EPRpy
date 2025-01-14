@@ -21,6 +21,7 @@ jobs:
         run: |
           pip install .
           pip install sphinx
+          pip install nbsphinx
 
       - name: Build documentation
         run: |
