@@ -5,8 +5,6 @@ from matplotlib.widgets import Button
 import warnings
 warnings.simplefilter('always')
 
-
-
 color_cycle = plt.cm.tab10.colors[:10]
 
 def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,g_scale=False):
@@ -78,6 +76,7 @@ def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_im
     elif ndim==2:
         fig,ax = plot_2d(eprdata_list,g_scale,plot_type, slices, spacing)
 
+    fig.set_size_inches((4,3))
     fig.tight_layout()
     if g_scale and eprdata_list[0].g is not None: 
         ax.invert_xaxis()
