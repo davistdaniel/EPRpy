@@ -74,4 +74,5 @@ Using EPRpy
    loading
    processing
    EprData
+   Examples
 
