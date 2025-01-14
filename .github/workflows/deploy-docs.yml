@@ -2,6 +2,10 @@ name: Deploy EPRPy Documentation
 
 on:
   push:
+    paths:
+      - 'docs/source/**'
+      - 'eprpy/**'
+      - '.github/workflows/**'
     branches:
       - main
 
