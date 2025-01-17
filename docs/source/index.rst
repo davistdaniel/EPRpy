@@ -31,6 +31,9 @@ This command will install **EPRpy** and the following python libraries required 
 
 * `Matplotlib <https://matplotlib.org/stable/>`_ 
 * `NumPy <https://numpy.org/>`_ 
+* `SciPy <https://scipy.org/>`_ 
+* `tqdm <https://tqdm.github.io/>`_
+
 
 If the installation is successful, you can import **EPRpy** and printing the version as shown below.
 
