@@ -11,12 +11,6 @@ The library is born out of a collection of scripts I wrote for routine analysis 
 
 ## Installation
 
-### From a pre-built distribution
-
-Run in a terminal : 
-
-`pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple eprpy`
-
 ### From source
 Clone the [EPRpy repository](https://davistdaniel.github.io/EPRpy/) and then navigate to the folder where setup.py file is present.
 Then, run in a terminal :
