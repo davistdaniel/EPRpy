@@ -2,7 +2,7 @@ from setuptools import setup, find_packages  # type: ignore
 
 setup(
     name='eprpy',
-    version='0.9.0a2',
+    version='0.9.0a3',
     description="A Python library for working with EPR spectroscopic data.",
     long_description=open("README.md").read(),  
     long_description_content_type="text/markdown",  
@@ -24,7 +24,8 @@ setup(
         "License :: OSI Approved :: MIT License",  
     ],
     install_requires=[
-        'numpy>=1.25.1,<=1.26.4',
+        'numpy<=1.26.4',
+        'scipy',
         'matplotlib',
         'tqdm'
     ],
