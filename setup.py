@@ -17,14 +17,13 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
-        "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Physics",
         "Topic :: Scientific/Engineering :: Chemistry",
         "License :: OSI Approved :: MIT License",  
     ],
     install_requires=[
-        'numpy<=1.26.4',
+        'numpy',
         'scipy',
         'matplotlib',
         'tqdm'
