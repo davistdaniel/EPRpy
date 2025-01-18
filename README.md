@@ -1,4 +1,4 @@
-# EPRpy 0.9.0
+# EPRpy
 
 <img src="https://davistdaniel.github.io/EPRpy/_images/eprpy_logo.png" alt="eprpy_logo" width="300">
 
@@ -6,12 +6,14 @@
 
 ## About
 
-EPRpy is a python library to streamline handling, inspection and processing of Electron Paramagnetic resonance spectroscopic data.
-The library is born out of a collection of scripts I wrote for routine analysis of EPR data and simple presentation of results. EPRpy might be of use to you if you need to read, plot and export EPR data acquired on Bruker EPR spectrometers for quick analysis. EPRpy focusses on ease of use, generating quick plots for data inspection and features automated processing workflows for specific EPR experiments.
+EPRpy is a Python library designed to streamline the handling, inspection, and processing of Electron Paramagnetic Resonance (EPR) spectroscopic data. The library originated as a collection of scripts I wrote for routine analysis of EPR data acquired on Bruker EPR spectrometers during my academic work. EPRpy focusses on ease of use, enabling quick data visualization, data comparisons, and having transperent as well as highly customisable control over data analysis.
 
 ## Installation
 
-### From source
+To install  and use EPRpy, Python must be installed on your operating system. Python can be downloaded from the [official website](https://www.python.org/downloads/). EPRpy is compatible with Python 3.9 to 3.12 and can be installed with Python's package manager `pip`.
+
+### Installing EPRpy from source
+
 Clone the [EPRpy repository](https://davistdaniel.github.io/EPRpy/) and then navigate to the folder where setup.py file is present.
 Then, run in a terminal :
 
@@ -23,13 +25,16 @@ For EPRpy documentation, see [here](https://davistdaniel.github.io/EPRpy/). Sour
 
 ## Features
 
-* Read and export EPR data.
+* Read and export EPR data acquired on Bruker EPR spectrometers.
 * Basic processing capabilities such as interactive baseline correction, integration etc.
 * Generate quick plots of 1D and 2D datasets, compare different datasets.
 
 ## Upcoming 
-* Automated workflows for specific EPR experiments
+* Automated workflow templates for specific EPR experiments
+* Documentation for visualization features.
 
 ## Limitations
 * Supports reading of files only in Bruker BES3T format v.1.2 and upto 2D datasets.
 
+## License
+[MIT License](https://github.com/davistdaniel/EPRpy/blob/main/LICENSE)
