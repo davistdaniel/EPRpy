@@ -12,10 +12,16 @@ EPRpy is a Python library designed to streamline the handling, inspection, and p
 
 To install  and use EPRpy, Python must be installed on your operating system. Python can be downloaded from the [official website](https://www.python.org/downloads/). EPRpy is compatible with Python 3.9 to 3.12 and can be installed with Python's package manager `pip`.
 
+### Installing EPRpy from a pre-built distribution
+
+Run in a terminal (or command prompt) :
+
+`python -m pip install eprpy`
+
 ### Installing EPRpy from source
 
 Clone the [EPRpy repository](https://davistdaniel.github.io/EPRpy/) and then navigate to the folder where setup.py file is present.
-Then, run in a terminal :
+Then, run in a terminal (or command prompt) :
 
 `python -m pip install .`
 
