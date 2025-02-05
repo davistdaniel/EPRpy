@@ -6,6 +6,8 @@ on:
       - 'docs/source/**'
       - 'eprpy/**'
       - '.github/workflows/**'
+      - 'setup.py'
+      - 'pyproject.toml'
     branches:
       - main
 
@@ -19,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.12.7'
 
       - name: Install pandoc
         run: |
