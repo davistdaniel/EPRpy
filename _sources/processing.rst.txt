@@ -5,8 +5,7 @@ After loading the data into an :doc:`EprData <EprData>` object, following functi
 which are valid on NumPy arrays are also valid on  attributes of :doc:`EprData <EprData>` which are NumPy arrays, such as ``data``, ``x`` and ``y``.
 
 .. note::
-    Unless otherwise specified, all operations on the data are done in place i.e. a new object is not returned. After each operation, a history entry is added to the history of the ``EprData`` object. 
-    Calling the ``undo`` method of any ``EprData`` object will return the ``EprData`` object before the last operation on the data.
+    All operations returns a new ``EprData`` object. After each operation, a history entry is added to the history of the ``EprData`` object. 
 
 Scaling
 ************
