@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from copy import deepcopy
 
+# EPRpy
 from eprpy.plotter import eprplot
 from eprpy.processor import _integrate,_scale_between,_baseline_correct
 

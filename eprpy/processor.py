@@ -3,6 +3,7 @@ from datetime import datetime
 from copy import deepcopy
 from scipy.interpolate import UnivariateSpline
 
+# EPRpy
 from eprpy.plotter import interactive_points_selector
 
 def _scale_between(eprdata,min_val=None,max_val=None):
