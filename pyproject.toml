@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -11,7 +11,6 @@ requires-python = ">=3.9, <3.13.1"
 authors = [
     { name = "Davis Thomas Daniel", email = "davisthomasdaniel@gmail.com" }
 ]
-license = { text = "MIT" }
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",
@@ -32,6 +31,6 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/davistdaniel/EPRpy"
-Bug Tracker = "https://github.com/davistdaniel/EPRpy/issues"
+Issues = "https://github.com/davistdaniel/EPRpy/issues"
 Documentation = "https://davistdaniel.github.io/EPRpy/"
-Source = "https://github.com/davistdaniel/EPRpy"
+Repository = "https://github.com/davistdaniel/EPRpy"
