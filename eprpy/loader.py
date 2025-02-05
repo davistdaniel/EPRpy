@@ -420,18 +420,22 @@ class EprData():
 
     def scale_between(self,min_val=None,max_val=None):
 
-        _scale_between(self,min_val,max_val)
+        eprdata_proc = _scale_between(self,min_val,max_val)
+        return eprdata_proc
 
     def integral(self):
         
-        _integrate(self)
+        eprdata_proc = _integrate(self)
+        return eprdata_proc
 
     def baseline_correct(self,interactive=False,
                       npts=10,method='linear',spline_smooth=1e-5,
                       order=2):
         
-        _baseline_correct(self,interactive,
+        eprdata_proc = _baseline_correct(self,interactive,
                           npts,method,spline_smooth,order)
+        return eprdata_proc
+
         
     def select_region(self,region):
 

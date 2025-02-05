@@ -2,8 +2,6 @@ import numpy as np
 from datetime import datetime
 from copy import deepcopy
 from scipy.interpolate import UnivariateSpline
-from tqdm import tqdm
-
 
 from eprpy.plotter import interactive_points_selector
 
@@ -32,18 +30,21 @@ def _scale_between(eprdata,min_val=None,max_val=None):
     - A history entry is added to the `EprData` object, documenting the scaling 
       operation and the range used.
     """
+    eprdata_proc = deepcopy(eprdata)
 
     min_val = 0 if min_val is None else min_val
     max_val = 1 if max_val is None else max_val
 
-    data_min = np.min(eprdata.data,axis=-1)
-    data_max = np.max(eprdata.data,axis=-1)
+    data_min = np.min(eprdata_proc.data,axis=-1)
+    data_max = np.max(eprdata_proc.data,axis=-1)
 
-    eprdata.data = (eprdata.data-data_min)/(data_max-data_min)
-    eprdata.data *= int(max_val-min_val)
-    eprdata.data += min_val
+    eprdata_proc.data = (eprdata_proc.data-data_min)/(data_max-data_min)
+    eprdata_proc.data *= int(max_val-min_val)
+    eprdata_proc.data += min_val
 
-    eprdata.history.append([f'{str(datetime.now())} : Data scaled between {min_val} and {max_val}.',deepcopy(eprdata)])
+    eprdata_proc.history.append([f'{str(datetime.now())} : Data scaled between {min_val} and {max_val}.',deepcopy(eprdata_proc)])
+
+    return eprdata_proc
 
 
 def _integrate(eprdata):
@@ -66,12 +67,15 @@ def _integrate(eprdata):
     - A history entry is added to the `EprData` object, documenting the integration 
       operation.
     """
+    eprdata_proc = deepcopy(eprdata)
 
-    delta_B = np.mean(np.diff(eprdata.x))
-    integral = np.cumsum(eprdata.data,axis=-1)*delta_B 
+    delta_B = np.mean(np.diff(eprdata_proc.x))
+    integral = np.cumsum(eprdata_proc.data,axis=-1)*delta_B 
 
-    eprdata.data = integral
-    eprdata.history.append([f'{str(datetime.now())} : Integral calculated',deepcopy(eprdata)])
+    eprdata_proc.data = integral
+    eprdata_proc.history.append([f'{str(datetime.now())} : Integral calculated',deepcopy(eprdata_proc)])
+
+    return eprdata_proc
 
 def _baseline_correct(eprdata,interactive=False,
                       npts=10,method='linear',spline_smooth=1e-5,
@@ -118,16 +122,17 @@ def _baseline_correct(eprdata,interactive=False,
     - A history entry is added to the `EprData` object, documenting the baseline correction.
     """
 
+    eprdata_proc = deepcopy(eprdata)
 
-    x = eprdata.x
-    y = eprdata.data
+    x = eprdata_proc.x
+    y = eprdata_proc.data
 
     if y.ndim ==2:
         bc_data,baselines = _baseline_correct_2d(x,y,interactive,
                           npts,method,spline_smooth,order)
-        eprdata.data = bc_data
-        eprdata.baseline = baselines
-        eprdata.history.append([f'{str(datetime.now())} : Baseline corrected',deepcopy(eprdata)])
+        eprdata_proc.data = bc_data
+        eprdata_proc.baseline = baselines
+        eprdata_proc.history.append([f'{str(datetime.now())} : Baseline corrected',deepcopy(eprdata_proc)])
 
     elif y.ndim==1:
 
@@ -159,9 +164,11 @@ def _baseline_correct(eprdata,interactive=False,
 
         bc_corr = y - baseline
 
-        eprdata.baseline = baseline
-        eprdata.data = bc_corr
-        eprdata.history.append([f'{str(datetime.now())} : Baseline corrected',deepcopy(eprdata)])
+        eprdata_proc.baseline = baseline
+        eprdata_proc.data = bc_corr
+        eprdata_proc.history.append([f'{str(datetime.now())} : Baseline corrected',deepcopy(eprdata_proc)])
+
+    return eprdata_proc
 
 
 def _baseline_correct_2d(x,y,interactive=False,
@@ -226,7 +233,7 @@ def _baseline_correct_2d(x,y,interactive=False,
     if baseline_points is not None and len(baseline_points) > 0:
         x_fit = x[baseline_points]
         
-    for idx,arr in tqdm(enumerate(y)):
+    for idx,arr in enumerate(y):
         y_fit = arr[baseline_points]
         if method == "linear":
             coeffs = np.polyfit(x_fit, y_fit, 1)
