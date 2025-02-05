@@ -2,7 +2,7 @@
 
 <img src="https://davistdaniel.github.io/EPRpy/_images/eprpy_logo.png" alt="eprpy_logo" width="300">
 
-[![Static Badge](https://img.shields.io/badge/Version-0.9.0-blue?label=Version)](https://github.com/davistdaniel/EPRpy) [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdavistdaniel.github.io%2FEPRpy%2F&up_message=online&down_message=offline&label=Docs)](https://davistdaniel.github.io/EPRpy/) [![GitHub last commit](https://img.shields.io/github/last-commit/davistdaniel/EPRpy)](https://github.com/davistdaniel/EPRpy/commits/main/) 
+[![Static Badge](https://img.shields.io/badge/Version-0.9.0a3-blue?label=Version)](https://github.com/davistdaniel/EPRpy) [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdavistdaniel.github.io%2FEPRpy%2F&up_message=online&down_message=offline&label=Docs)](https://davistdaniel.github.io/EPRpy/) [![GitHub last commit](https://img.shields.io/github/last-commit/davistdaniel/EPRpy)](https://github.com/davistdaniel/EPRpy/commits/main/) 
 
 ## About
 
