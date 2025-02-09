@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Data (1D)" href="notebooks/examples.html" /><link rel="prev" title="EprData class" href="EprData.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Loading and exporting data" href="loading.html" /><link rel="prev" title="Welcome to EPRpy’s documentation" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Examples - EPRpy 0.9.0a5 documentation</title>
+        <title>Setting up EPRpy - EPRpy 0.9.0a5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -200,12 +200,12 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Setting up EPRpy</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Setting up EPRpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loading.html">Loading and exporting data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="processing.html">Operations on data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Visualizing data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="EprData.html">EprData class</a></li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Examples</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="Examples.html">Examples</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html">Data (1D)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Operations-on-Data">Operations on Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Data-(2D)">Data (2D)</a></li>
@@ -231,7 +231,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/Examples.rst.txt" title="View this page">
+  <a class="muted-link" href="_sources/installation.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -245,38 +245,52 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="examples">
-<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/examples.html">Data (1D)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Importing-EPRpy">Importing EPRpy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Loading-data">Loading data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Plotting">Plotting</a></li>
+          <section id="setting-up-eprpy">
+<h1>Setting up EPRpy<a class="headerlink" href="#setting-up-eprpy" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p>To install <strong>EPRpy</strong>, python needs to be installed. <strong>EPRpy</strong> works with python versions greater than 3.9. Python can be downloaded from the <a class="reference external" href="https://www.python.org/">official website</a>.</p></li>
+<li><p>Python installation and version can be confirmed by typing <code class="docutils literal notranslate"><span class="pre">python</span></code> in a terminal or command prompt. Note that the alias for <code class="docutils literal notranslate"><span class="pre">python</span></code> can be <code class="docutils literal notranslate"><span class="pre">python3</span></code> on your operating system.</p></li>
+<li><p>If python and its package manager <em>pip</em> is installed, <strong>EPRpy</strong> can be installed using <em>pip</em>.</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/examples.html#Operations-on-Data">Operations on Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Scaling-data">Scaling data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Baseline-correction">Baseline correction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Computing-integrals">Computing integrals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#Selecting-a-region">Selecting a region</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#History-of-data-operations">History of data operations</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="notebooks/examples.html#Data-(2D)">Data (2D)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#id1">Loading data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/examples.html#id2">Plotting</a></li>
-</ul>
-</li>
-</ul>
+<section id="install-from-a-pre-built-distribution">
+<h2>Install from a pre-built distribution<a class="headerlink" href="#install-from-a-pre-built-distribution" title="Link to this heading">¶</a></h2>
+<p>Use python’s package manager <em>pip</em>. Execute the following in a terminal.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>eprpy
+</pre></div>
 </div>
+</section>
+<section id="install-from-source">
+<h2>Install from source<a class="headerlink" href="#install-from-source" title="Link to this heading">¶</a></h2>
+<p>Clone the <a class="reference external" href="https://davistdaniel.github.io/EPRpy/">EPRpy repository</a> and then navigate to the folder where setup.py file is present.
+Then, run in a terminal (or command prompt) :</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m pip install .
+</pre></div>
+</div>
+<p>Installing <strong>EPRpy</strong> will also install the following python libraries required by <strong>EPRpy</strong>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://matplotlib.org/stable/">Matplotlib</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/">NumPy</a></p></li>
+<li><p><a class="reference external" href="https://scipy.org/">SciPy</a></p></li>
+<li><p><a class="reference external" href="https://tqdm.github.io/">tqdm</a></p></li>
+</ul>
+<p>If the installation is successful, you can import <strong>EPRpy</strong> and printing the version as shown below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">eprpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">epr</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">epr</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="upgrading">
+<h2>Upgrading<a class="headerlink" href="#upgrading" title="Link to this heading">¶</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>python -m pip install eprpy --upgrade
+</pre></div>
+</div>
+</section>
 </section>
 
         </article>
@@ -284,23 +298,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="notebooks/examples.html">
+          <a class="next-page" href="loading.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Data (1D)</div>
+                <div class="title">Loading and exporting data</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="EprData.html">
+          <a class="prev-page" href="index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">EprData class</div>
+                <div class="title">Home</div>
                 
               </div>
             </a>
@@ -322,8 +336,29 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Setting up EPRpy</a><ul>
+<li><a class="reference internal" href="#install-from-a-pre-built-distribution">Install from a pre-built distribution</a></li>
+<li><a class="reference internal" href="#install-from-source">Install from source</a></li>
+<li><a class="reference internal" href="#upgrading">Upgrading</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
@@ -333,7 +368,5 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>
