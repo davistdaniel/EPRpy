@@ -9,7 +9,7 @@
 project = 'EPRpy'
 copyright = '2024, Davis Thomas Daniel'
 author = 'Davis Thomas Daniel'
-release = '0.9.0a4'
+release = '0.9.0a5'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
