@@ -1,13 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
-from matplotlib.widgets import Button
+from matplotlib.widgets import Button, Slider
 import warnings
 warnings.simplefilter('always')
 
 color_cycle = plt.cm.tab10.colors[:10]
 
-def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,g_scale=False):
+def eprplot(eprdata_list, plot_type='stacked', 
+            slices='all', spacing=0.5, 
+            plot_imag=True,g_scale=False, interactive=False):
 
     """
     Plot one or multiple EPR data objects for visualization and comparison.
@@ -76,15 +78,19 @@ def eprplot(eprdata_list, plot_type='stacked', slices='all', spacing=0.5,plot_im
     elif ndim==2:
         fig,ax = plot_2d(eprdata_list,g_scale,plot_type, slices, spacing)
 
-    fig.set_size_inches((4,3))
-    fig.tight_layout()
+    if plot_type not in ['slider','surf']:
+        fig.set_size_inches((4,3))
+        fig.tight_layout()
+    
     if g_scale and eprdata_list[0].g is not None: 
         ax.invert_xaxis()
+    
+    if interactive:
+        data_cursor(fig)
     
     plt.show()
 
     return fig,ax
-
 
 def plot_1d(eprdata_list,g_scale,plot_imag=True):
 
@@ -142,7 +148,7 @@ def plot_1d(eprdata_list,g_scale,plot_imag=True):
             x = eprdata.x
 
         if np.iscomplexobj(data):
-            ax.plot(x,np.real(data), label=f'Real',color=color_cycle[c_idx])
+            ax.plot(x,np.real(data), label='Real',color=color_cycle[c_idx])
             if plot_imag:
                 ax.plot(x,np.imag(data), '--', alpha=0.5, label='Imaginary',color=color_cycle[c_idx])
         else:
@@ -225,7 +231,7 @@ def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
     # Set color scheme for slices
     num_selected_slices = len(selected_slices)
 
-    slice_colors = cm.winter(np.linspace(0, 1, num_selected_slices))  # Gradual colors for larger slices
+    slice_colors = cm.winter(np.linspace(0, 1, num_selected_slices)) 
 
     if plot_type=='surf':
         fig,ax = surf_plot(data,x,y,slice_len,selected_slices)
@@ -235,7 +241,9 @@ def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
         fig,ax = stack_plot(data,x,y,selected_slices,slice_colors,spacing)
     elif plot_type=='pcolor':
         fig,ax = pcolor_plot(data,x,y,slice_len,selected_slices)
-    
+    elif plot_type=='slider':
+        fig,ax = slider_plot(data,x,y,slice_len,selected_slices)
+
     return fig,ax
 
 def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
@@ -317,7 +325,7 @@ def surf_plot(data,x,y,slice_len,selected_slices):
     fig,ax = plt.subplots(subplot_kw={"projection": "3d"})
     X, Y = np.meshgrid(x[range(slice_len)], y[selected_slices])
     Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
-    surf = ax.plot_surface(X, Y, Z, cmap='viridis')
+    surf = ax.plot_surface(X, Y, Z, cmap='jet',rstride=1, cstride=1)
     fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
 
     return fig,ax
@@ -404,6 +412,125 @@ def pcolor_plot(data,x,y,slice_len,selected_slices):
 
     return fig,ax
 
+
+def slider_plot(data, x, y, slice_len, selected_slices):
+
+    """
+    Create a plot for selected slices of 2D EPR data with a slider.
+
+    Parameters
+    ----------
+    data : ndarray
+        The 2D data array from which the slices will be plotted.
+    x : ndarray
+        The x-axis values corresponding to the data.
+    y : ndarray
+        The y-axis values corresponding to the data.
+    slice_len : int
+        The length of each slice along the x-axis.
+    selected_slices : list of int
+        A list of slice indices to be plotted.
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+        The figure object containing the pseudocolor plot.
+    ax : matplotlib.axes._axes.Axes
+        The axes object of the plot.
+
+    """
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    plt.subplots_adjust(left=0.15, bottom=0.3)
+
+    X, Y = x[:slice_len], y[selected_slices]
+    Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
+
+    m, n = Z.shape  
+    swap_axes = [False]  
+    current_x_lim = None 
+
+    # Initial plot (first row)
+    line, = ax.plot(X, Z[0, :])
+    ax.set_ylim(Z.min(), Z.max())
+    ax.autoscale(False)
+
+    # Slider
+    ax_slider = plt.axes([0.15, 0.15, 0.7, 0.03])
+    slider = Slider(ax_slider, "Index", 0, m - 1, valinit=0, valstep=1,handle_style={'facecolor':'red','size':15},track_color='black')
+    fig.slider = slider
+
+    # Swap Axes Button
+    ax_button = plt.axes([0.15, 0.07, 0.2, 0.05]) 
+    button = Button(ax_button, "Swap Axes")
+    fig.button = button 
+
+    # Value label
+    ax_label = plt.axes([0.4, 0.07, 0.3, 0.05]) 
+    ax_label.set_xticks([]) 
+    ax_label.set_yticks([])
+    label_text = ax_label.annotate(
+        f"{Y[0]}", xy=(0.5, 0.5), ha="center", va="center", fontsize=10
+    )
+
+    def update(val):
+        """Updates the plot based on slider value and axis mode."""
+        index = int(slider.val)
+        is_row_mode = not swap_axes[0]  
+
+        if is_row_mode:
+            x_data = X 
+            y_data = Z[index, :]  
+            ax.set_xlim(min(X), max(X)) 
+            label_text.set_text(f"{Y[index]}")
+        else:
+            x_data = Y  
+            y_data = Z[:, index]  
+            ax.set_xlim(min(Y), max(Y))  
+            label_text.set_text(f"{X[index]}")
+
+        if current_x_lim:
+            ax.set_xlim(current_x_lim)
+        else:
+            ax.autoscale(False) 
+          
+        line.set_xdata(x_data)
+        line.set_ydata(y_data)
+
+        fig.canvas.draw_idle()  
+
+    def swap_axes_clicked(event):
+        """Swaps row/column mode and updates slider limits."""
+        swap_axes[0] = not swap_axes[0]  
+        new_max = n - 1 if swap_axes[0] else m - 1
+
+        slider.valmax = new_max
+        slider.ax.set_xlim(slider.valmin, slider.valmax)
+        slider.set_val(slider.valmin)  
+        update(0)  # Force plot update
+
+        if swap_axes[0]:  
+            ax.set_xlim(min(Y), max(Y))  
+        else:  
+            ax.set_xlim(min(X), max(X))  
+
+        fig.canvas.draw_idle()  
+
+    def on_zoom(event):
+        """Handles zooming by the user."""
+        nonlocal current_x_lim
+        current_x_lim = ax.get_xlim() 
+
+    # Attach event listeners
+    slider.on_changed(update)
+    button.on_clicked(swap_axes_clicked)
+
+    # Add zoom event listener
+    fig.canvas.mpl_connect('button_release_event', on_zoom)
+
+    return fig, ax
+
+
 def interactive_points_selector(x,y):
 
     """
@@ -457,3 +584,105 @@ def interactive_points_selector(x,y):
     selected_points_sorted = sorted(selected_points, key=lambda idx: x[idx])
 
     return np.unique(np.array(selected_points_sorted, dtype=int))
+
+def data_cursor(fig=None):
+
+    """
+    Adds an interactive data cursor to a Matplotlib figure.
+
+    This function enables a crosshair cursor that tracks mouse movement 
+    within a given figure and displays the current x and y coordinates.
+    Additionally, it supports measuring horizontal distances between 
+    two x-coordinates using right-click dragging or Ctrl + Left Click.
+
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure, optional
+        The Matplotlib figure to which the data cursor will be added. 
+        If None, the current active figure (`plt.gcf()`) is used.
+
+    Notes
+    -----
+    - A red dashed crosshair follows the mouse position.
+    - Clicking (Left Click) sets a reference vertical line.
+    - Right Click or Ctrl + Left Click enables measuring horizontal distance.
+    - The measured distance (ΔX) is displayed in the bottom-left of the figure.
+    - The reference vertical line is removed on releasing the mouse button.
+    """
+    
+    if fig is None:
+        fig = plt.gcf()
+
+    ax = fig.gca()
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+
+    h_line, = ax.plot([xlim[0], xlim[1]], [(ylim[0] + ylim[1]) / 2] * 2, 'r--', lw=1)
+    v_line, = ax.plot([(xlim[0] + xlim[1]) / 2] * 2, [ylim[0], ylim[1]], 'r--', lw=1)
+
+    coord_text = ax.text(0.02, 0.95, '', transform=ax.transAxes, fontsize=10, color='red')
+    dist_text = ax.text(0.02, 0.02, '', transform=ax.transAxes, fontsize=10, color='blue')
+    ref_v_line, = ax.plot([], [], 'b-', lw=1)
+    drag_v_line, = ax.plot([], [], 'b-', lw=1)
+
+    ref_x = None
+    ctrl_pressed = False  
+
+    def on_mouse_move(event):
+        nonlocal ref_x
+        if event.inaxes:
+            x, y = event.xdata, event.ydata
+            h_line.set_ydata([y, y])
+            v_line.set_xdata([x, x])
+            coord_text.set_text(f'X: {x:.2f}, Y: {y:.2f}')
+
+            # Handling dragging for right-click OR Ctrl + Left Click
+            if (event.button == 3 or (ctrl_pressed and event.button is None)):
+                if ref_x is None:  
+                    ref_x = x 
+                    ref_v_line.set_xdata([ref_x, ref_x])
+                    ref_v_line.set_ydata(ax.get_ylim())
+
+                dist_text.set_text(f'ΔX: {abs(x - ref_x):.2f}')
+                drag_v_line.set_xdata([x, x])
+                drag_v_line.set_ydata(ax.get_ylim())
+            else:
+                dist_text.set_text('')
+
+            fig.canvas.draw_idle()
+
+    def on_mouse_press(event):
+        nonlocal ref_x
+        if event.button == 1 and event.inaxes and not ctrl_pressed:
+            ref_x = event.xdata
+            ref_v_line.set_xdata([ref_x, ref_x])
+            ref_v_line.set_ydata(ax.get_ylim())
+
+    def on_mouse_release(event):
+        nonlocal ref_x
+        if event.button == 1 or not ctrl_pressed:
+            ref_x = None
+            ref_v_line.set_xdata([])
+            ref_v_line.set_ydata([])
+            drag_v_line.set_xdata([])
+            drag_v_line.set_ydata([])
+            dist_text.set_text('')
+            fig.canvas.draw_idle()
+
+    def on_key_press(event):
+        nonlocal ctrl_pressed
+        if event.key == 'control':
+            ctrl_pressed = True
+
+    def on_key_release(event):
+        nonlocal ctrl_pressed
+        if event.key == 'control':
+            ctrl_pressed = False
+
+    fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
+    fig.canvas.mpl_connect('button_press_event', on_mouse_press)
+    fig.canvas.mpl_connect('button_release_event', on_mouse_release)
+    fig.canvas.mpl_connect('key_press_event', on_key_press)
+    fig.canvas.mpl_connect('key_release_event', on_key_release)
+
+    plt.show()

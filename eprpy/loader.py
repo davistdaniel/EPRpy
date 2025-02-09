@@ -240,7 +240,7 @@ def get_DTA_datatype(dsc_parameter_dict):
         data_format_dict = {'C':'i1','S':'i2','I':'i4','F':'f4','D':'f8'}
         data_format_real = data_format_dict[dsc_parameter_dict['IRFMT']]
     else:
-        raise ValueError(f'IRFMT keyword, which specifies the format of real values, could not be read from .DSC file.')
+        raise ValueError('IRFMT keyword, which specifies the format of real values, could not be read from .DSC file.')
     
     # get the byteorder, BIG for big endian, LIT for little endian
     if 'BSEQ' in dsc_parameter_dict:
@@ -414,9 +414,9 @@ class EprData():
         self.history[0].append(deepcopy(self))
 
     
-    def plot(self,g_scale=False,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True):
+    def plot(self,g_scale=False,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,interactive=False):
 
-        fig,ax = eprplot(self,plot_type,slices,spacing,plot_imag,g_scale=g_scale)
+        fig,ax = eprplot(self,plot_type,slices,spacing,plot_imag,g_scale=g_scale,interactive=interactive)
         return fig,ax
 
     def scale_between(self,min_val=None,max_val=None):
