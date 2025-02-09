@@ -8,7 +8,7 @@
 
 EPRpy is a Python library designed to streamline the handling, inspection, and processing of Electron Paramagnetic Resonance (EPR) spectroscopic data. The library originated as a collection of scripts I wrote for routine analysis of EPR data acquired on Bruker EPR spectrometers during my academic work. EPRpy focusses on ease of use, enabling quick data visualization, data comparisons, and having transparent as well as highly customisable control over data analysis.
 
-<img src="https://davistdaniel.github.io/EPRpy/_images/title_gif.gif" alt="title_gif">
+<img src="https://github.com/davistdaniel/EPRpy/blob/main/docs/source/images/title_gif.gif" alt="title_gif">
 
 ## Installation
 
