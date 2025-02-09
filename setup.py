@@ -2,7 +2,7 @@ from setuptools import setup, find_packages  # type: ignore
 
 setup(
     name='eprpy',
-    version='0.9.0a4',
+    version='0.9.0a5',
     description="A Python library for working with EPR spectroscopic data.",
     long_description=open("README.md").read(),  
     long_description_content_type="text/markdown",  
