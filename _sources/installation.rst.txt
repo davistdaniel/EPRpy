@@ -32,6 +32,9 @@ Installing **EPRpy** will also install the following python libraries required b
 * `tqdm <https://tqdm.github.io/>`_
 
 
+Importing
+---------------
+
 If the installation is successful, you can import **EPRpy** and printing the version as shown below.
 
 .. code-block:: python
