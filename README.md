@@ -2,8 +2,8 @@
 
 <img src="https://davistdaniel.github.io/EPRpy/_images/eprpy_logo.png" alt="eprpy_logo" width="300">
 
-![PyPI - Version](https://img.shields.io/pypi/v/eprpy) [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdavistdaniel.github.io%2FEPRpy%2F&up_message=online&down_message=offline&label=Docs)](https://davistdaniel.github.io/EPRpy/) [![GitHub last commit](https://img.shields.io/github/last-commit/davistdaniel/EPRpy)](https://github.com/davistdaniel/EPRpy/commits/main/) ![PyPI - License](https://img.shields.io/pypi/l/eprpy)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eprpy)
+[![PyPI - Version](https://img.shields.io/pypi/v/eprpy)](https://pypi.org/project/eprpy/) [![Website](https://img.shields.io/website?url=https%3A%2F%2Fdavistdaniel.github.io%2FEPRpy%2F&up_message=online&down_message=offline&label=Docs)](https://davistdaniel.github.io/EPRpy/) [![GitHub last commit](https://img.shields.io/github/last-commit/davistdaniel/EPRpy)](https://github.com/davistdaniel/EPRpy/commits/main/) ![PyPI - License](https://img.shields.io/pypi/l/eprpy)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/eprpy)](https://davistdaniel.github.io/EPRpy/installation.html#setting-up-eprpy)
 
 ## About
 
