@@ -28,7 +28,7 @@ Baseline correction in EPRpy supports 1D and 2D data and allows for interactive 
 The baseline can be fitted using linear, polynomial, or spline methods. To correct the baseline, ``baseline_correct`` method of the ``EprData`` class can be used.
 Basline correction accepts various inputs :
 
-* *interactive* : If set to True, this will plot the data with an option to sleect points interactively. These points will then be used for the calculatinh the baseline.
+* *interactive* : If set to True, this will plot the data with an option to select points interactively. These points will then be used for the calculating the baseline.
 * *npts* : Another way of specifying points. When *interactive* is set to False, npts is equal to the number of points at the start and end of the data which is used for baseline correction.
 * *method* :  Should be one of 'linear', 'polynomial' and 'spline'.
 * *order* : Specifies the polynomial order in case of *method* 'polynomial'.

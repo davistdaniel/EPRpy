@@ -21,10 +21,11 @@ Data can be loaded into an ``EprData`` object by using the ``load(filepath)`` fu
 ``epr_data`` is an :doc:`EprData <EprData>` data object with various :doc:`accessible attributes <EprData>`. For instance. the loaded data can be accessed by ``epr_data.data`` and 
 acquisition parameters can be accessed by ``epr_data.acq_param``.
 
+
 Exporting data
 -----------------
 
-Data is stored in the form of Numpy arrays, therfore, you can use numpy functions as shown below.
+Data is stored in the form of Numpy arrays, therfore, you can use numpy functions for exporting data as shown below.
 
 .. code-block:: python
 

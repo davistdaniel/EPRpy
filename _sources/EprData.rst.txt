@@ -13,5 +13,3 @@ EprData class
 * **is_complex** : A boolean flag which indicates if the data is of complex type (i.e. also contains imaginary values)
 * **acq_param** : A python dictionary of acquisition parameters which were read from the .DSC file.
 * **history** : Describes the history of the ``EprData`` object. This attribute is a list of lists, with each element in the main list containing a string desrcribing the processing step and the corresponding ``EprData`` object.
-
-

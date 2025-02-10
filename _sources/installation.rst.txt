@@ -8,7 +8,7 @@ Setting up EPRpy
 Install from a pre-built distribution
 ----------------------------------------------
 
-Use python's package manager *pip*. Execute the following in a terminal.
+Use python's package manager *pip*. Execute the following in a terminal (or command prompt) :
 
 .. code-block:: bash
    
