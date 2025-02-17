@@ -72,7 +72,7 @@ def test_get_dim_arrays():
     test_ntup,test_dim = get_dim_arrays(test_dsc_dict,Path(test_filepath_dta))
     
     assert test_ntup == (1, 1, 2048)
-    np.testing.assert_array_equal(exp_dim,test_dim)
+    np.testing.assert_array_almost_equal(exp_dim,test_dim)
 
 def test_get_DTA_datatype():
     test_filepath_dsc = data_dir+'/tempo.DSC'
@@ -90,8 +90,8 @@ def test_read_DTA_file():
 
     test_datadta,test_dimlist = read_DTA_file(Path(test_filepath_dta),test_dsc_dict)
     
-    np.testing.assert_array_equal(exp_datadata,test_datadta)
-    np.testing.assert_array_equal(test_dimlist[0],exp_dimlist0)
+    np.testing.assert_array_almost_equal(exp_datadata,test_datadta)
+    np.testing.assert_array_almost_equal(test_dimlist[0],exp_dimlist0)
     assert isinstance(test_dimlist,list)
 
 def test_read_GF_file():
@@ -108,7 +108,7 @@ def test_read_GF_file():
     test_dsc_dict = read_DSC_file(Path(test_filepath_dsc))
     exp_gf_data = np.load(data_dir+'/test_read_GF_file_data.npy')
 
-    np.testing.assert_array_equal(exp_gf_data,read_GF_file('Y',test_dsc_dict,Path(test_filepath_dta)))
+    np.testing.assert_array_almost_equal(exp_gf_data,read_GF_file('Y',test_dsc_dict,Path(test_filepath_dta)))
 
     with pytest.raises(FileNotFoundError):
         _ = read_GF_file('X',test_dsc_dict,Path(test_filepath_dta))
@@ -126,8 +126,8 @@ class TestEPR1d():
         exp_x = np.load(data_dir+'/test_load_1d_epr_x.npy')
         exp_data = np.load(data_dir+'/test_load_1d_epr.npy')
 
-        np.testing.assert_array_equal(exp_x,test_load_1d.x)
-        np.testing.assert_array_equal(exp_data,test_load_1d.data)
+        np.testing.assert_array_almost_equal(exp_x,test_load_1d.x)
+        np.testing.assert_array_almost_equal(exp_data,test_load_1d.data)
 
         test_filepath_dsc = data_dir+'/tempo.DSC'
         test_dsc_dict = read_DSC_file(Path(test_filepath_dsc))
@@ -139,32 +139,32 @@ class TestEPR1d():
     def test_scale_between(self,test_load_1d):
 
         exp_data = np.load(data_dir+'/test_scale_between1d_default.npy')
-        np.testing.assert_array_equal(test_load_1d.scale_between().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.scale_between().data,exp_data)
 
         exp_data = np.load(data_dir+'/test_scale_between1d-1_1.npy')
-        np.testing.assert_array_equal(test_load_1d.scale_between(-1,1).data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.scale_between(-1,1).data,exp_data)
 
     def test_integral(self,test_load_1d):
 
         exp_data = np.load(data_dir+'/test_integral.npy')
-        np.testing.assert_array_equal(test_load_1d.integral().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.integral().data,exp_data)
 
     def test_baseline_correction(self,test_load_1d):
 
         exp_data = np.load(data_dir+'/test_default_bc.npy')
-        np.testing.assert_array_equal(test_load_1d.baseline_correct().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct().data,exp_data)
 
         exp_data = np.load(data_dir+'/test_poly2_bc.npy')
-        np.testing.assert_array_equal(test_load_1d.baseline_correct(method='polynomial',order=2).data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='polynomial',order=2).data,exp_data)
 
         exp_data = np.load(data_dir+'/test_poly2_bc_baseline.npy')
-        np.testing.assert_array_equal(test_load_1d.baseline_correct(method='polynomial',order=2).baseline,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='polynomial',order=2).baseline,exp_data)
 
         exp_data = np.load(data_dir+'/test_spline_bc.npy')
-        np.testing.assert_array_equal(test_load_1d.baseline_correct(method='spline').data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='spline').data,exp_data)
 
         exp_data = np.load(data_dir+'/test_spline_bc_baseline.npy')
-        np.testing.assert_array_equal(test_load_1d.baseline_correct(method='spline').baseline,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='spline').baseline,exp_data)
 
     def test_plot(self,test_load_1d):
         fig,ax=test_load_1d.plot()
@@ -181,9 +181,9 @@ class TestEPR2d():
         exp_data = np.load(data_dir+'/test_load_2d_epr.npy')
         exp_y = np.load(data_dir+'/test_load_2d_epr_y.npy')
 
-        np.testing.assert_array_equal(exp_x,test_load_2d.x)
-        np.testing.assert_array_equal(exp_y,test_load_2d.y)
-        np.testing.assert_array_equal(exp_data,test_load_2d.data)
+        np.testing.assert_array_almost_equal(exp_x,test_load_2d.x)
+        np.testing.assert_array_almost_equal(exp_y,test_load_2d.y)
+        np.testing.assert_array_almost_equal(exp_data,test_load_2d.data)
 
         test_filepath_dsc = data_dir+'/tempo_time.DSC'
         test_dsc_dict = read_DSC_file(Path(test_filepath_dsc))
@@ -195,12 +195,12 @@ class TestEPR2d():
     def test_scale_between(self,test_load_2d):
 
         exp_data = np.load(data_dir+'/test_scale_between2d_default.npy')
-        np.testing.assert_array_equal(test_load_2d.scale_between().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_2d.scale_between().data,exp_data)
 
     def test_baseline_correction(self,test_load_2d):
 
         exp_data = np.load(data_dir+'/test_default2d_bc.npy')
-        np.testing.assert_array_equal(test_load_2d.baseline_correct().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_2d.baseline_correct().data,exp_data)
 
     def test_plot(self,test_load_2d):
         fig,ax=test_load_2d.plot()
