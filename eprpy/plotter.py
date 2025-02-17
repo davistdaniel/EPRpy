@@ -88,8 +88,6 @@ def eprplot(eprdata_list, plot_type='stacked',
     if interactive:
         data_cursor(fig)
     
-    plt.show()
-
     return fig,ax
 
 def plot_1d(eprdata_list,g_scale,plot_imag=True):

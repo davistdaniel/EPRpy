@@ -36,8 +36,8 @@ def _scale_between(eprdata,min_val=None,max_val=None):
     min_val = 0 if min_val is None else min_val
     max_val = 1 if max_val is None else max_val
 
-    data_min = np.min(eprdata_proc.data,axis=-1)
-    data_max = np.max(eprdata_proc.data,axis=-1)
+    data_min = np.min(eprdata_proc.data,axis=-1,keepdims=True)
+    data_max = np.max(eprdata_proc.data,axis=-1,keepdims=True)
 
     eprdata_proc.data = (eprdata_proc.data-data_min)/(data_max-data_min)
     eprdata_proc.data *= int(max_val-min_val)

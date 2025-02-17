@@ -345,7 +345,7 @@ def read_GF_file(ax_name,dsc_parameter_dict,dta_filepath):
         with open(gf_filepath,'rb') as gf_file:
             gf_data = np.fromfile(gf_file,dtype=np.dtype(gf_byteorder+gf_dataformat))
     else:
-        raise FileNotFoundError(f'{ax_name}GF was not found at {str(dta_filepath.parent)}')
+        raise FileNotFoundError(f'{ax_name}GF was not found at {str(gf_filepath)}')
     
     return gf_data
 
