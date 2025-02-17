@@ -1,0 +1,1 @@
+This folder holds test results from tests for EPRpy.
