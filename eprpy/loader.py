@@ -7,7 +7,7 @@ from copy import deepcopy
 
 # EPRpy
 from eprpy.plotter import eprplot
-from eprpy.processor import _integrate,_scale_between,_baseline_correct
+from eprpy.processor import _integrate,_scale_between,_baseline_correct,_derivative,_baseline_correct_2d
 
 
 def load(filepath):
@@ -411,7 +411,7 @@ class EprData():
             self.g = ((float(self.acq_param['MWFQ'])/1e+9)/(13.996*(x_g/10000)))
         else:
             self.g = None
-        self.history[0].append(deepcopy(self))
+        self.history[-1].append(deepcopy(self))
 
     
     def plot(self,g_scale=False,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,interactive=False):
@@ -447,6 +447,143 @@ class EprData():
         out_dict['data'] =  out_dict['data'][...,region]
 
         return EprData(out_dict)
+    
+    def derivative(self,sigma=1,axis=-1):
 
+        epr_data_proc = _derivative(self,sigma,axis)
+        return epr_data_proc
+
+    def process(name,):
+        pass
         
         
+class EprWorkflow():
+
+    """
+    
+    Parameters
+    ----------
+    eprdata : ErpData
+        An instance of EprData class
+    zf : int, optional
+        Number of points to use for zero filling
+    poly_order : int, optional, default 3
+        Order of polynomial used for fitting and baseline correction
+    x0 : float, optional, default 0
+        Offset value subtracted from `x`.
+    x_max : float, optional, default None
+        Upper bound of the window. If None, the maximum of `x` is used.
+    window_func:  function, optional, default None
+        Window function, if None, uses Hamming window
+    """
+
+    def __init__(self, eprdata,zf=0,poly_order=3,window_func=None,x0=0,x_max=None):
+        self.eprdata_proc = deepcopy(eprdata)
+        
+        assert type(zf) is int, "zero-fill parameter must be an integer"
+        self.zf = (0,zf)
+        assert type(poly_order) is int, "poly_order parameter must be an integer"
+        self.poly_order=poly_order
+        self.x0 = x0
+        self.x_max = x_max
+        
+        if callable(window_func):
+            self.window_func = window_func
+        else:
+            self.window_func = (
+                lambda x, x0=self.x0, x_max=self.x_max: 0.54
+                + 0.46
+                * np.cos(
+                    (np.pi * (x - abs(x0)))
+                    / (abs(np.max(x) if x_max is None else x_max) - abs(x0))
+                )
+            ) # hamming function
+        
+
+
+    def hyscore(self):
+
+        hyscore_out_dict = self.eprdata_proc.data_dict
+        hyscore_out_dict["proc_param"] = {
+            "zf": self.zf,
+            "poly_order": self.poly_order,
+            "x0": self.x0,
+            "x_max": self.x_max,
+        }
+        hyscore_out_dict['raw_data'] = self.eprdata_proc.data
+        
+        x,y = self.eprdata_proc.x,self.eprdata_proc.y
+        real_data = self.eprdata_proc.data.real
+
+        # baseline correction
+        bc_data1, bc1 = _baseline_correct_2d(
+            x, real_data, interactive=False, npts=x.size, method="polynomial", order=3
+        )
+        hyscore_out_dict["baseline_dim1"] = bc1
+
+        bc_data2, bc2 = _baseline_correct_2d(
+            y, bc_data1.T, interactive=False, npts=y.size, method="polynomial", order=3
+        )
+        hyscore_out_dict["baseline_dim2"] = bc2
+        bc_data = bc_data2.T
+
+        # windowing
+        window1 = self.window_func(x)
+        window2 = self.window_func(y)
+        bc_w_data1 = bc_data*window1
+        bc_w_data2 = bc_w_data1.T*window2
+        bc_w_data = bc_w_data2.T
+        hyscore_out_dict["window_dim1"] = window1
+        hyscore_out_dict["window_dim2"] = window2
+
+        if self.zf[-1]!=0:
+            x_spacing,y_spacing = np.mean(np.diff(x)),np.mean(np.diff(y))
+            zf_x = np.linspace(x[0],x[-1]+(self.zf[-1]*x_spacing),x.size+self.zf[-1])
+            zf_y = np.linspace(y[0],y[-1]+(self.zf[-1]*y_spacing),y.size+self.zf[-1])
+            hyscore_out_dict["time_axis1"] = zf_x
+            hyscore_out_dict["time_axis2"] = zf_y
+            print(zf_x.shape)
+            bc_w_zf_data = np.pad(bc_w_data,self.zf)
+        else:
+            hyscore_out_dict["time_axis1"] = x
+            hyscore_out_dict["time_axis2"] = y
+            bc_w_zf_data = bc_w_data
+
+        # 2DFFT
+        try:
+            x_unit = self.eprdata_proc.acq_param["XUNI"]
+            print(x_unit)
+        except Exception as e:
+            x_unit = None
+            print(f"Error while reading x units : {e}")
+
+        if x_unit in ["ns","ms"]:
+            x_factor = 1000
+        elif x_unit in ["us","s"]:
+            x_factor = 1
+        else:
+            x_factor = 1
+        
+        # calculate sampling_frequency/2 (Nyquist frequency) for x_array    
+        freq_limit1 = x_factor/(abs(hyscore_out_dict['time_axis1'][0]-hyscore_out_dict['time_axis1'][1]))*0.5
+        freq_limit2 = x_factor/(abs(hyscore_out_dict['time_axis2'][0]-hyscore_out_dict['time_axis2'][1]))*0.5
+        print(freq_limit1,x_factor)
+        frequency_axis1 = np.linspace(-freq_limit1,freq_limit1,hyscore_out_dict['time_axis1'].size)
+        frequency_axis2 = np.linspace(-freq_limit2,freq_limit2,hyscore_out_dict['time_axis2'].size)
+        
+        # fft shift
+        bc_w_zf_fft_data = np.fft.fft2(bc_w_zf_data)
+        bc_w_zf_fft_data_shifted = np.fft.fftshift(bc_w_zf_fft_data)
+        bc_w_zf_fft_data_shifted_abs = np.absolute(bc_w_zf_fft_data_shifted)
+
+        # output as EprData
+        hyscore_out_dict['frequency_axis1'] = frequency_axis1
+        hyscore_out_dict['frequency_axis2'] = frequency_axis2
+        hyscore_out_dict["FFT_data"] = bc_w_zf_fft_data
+        hyscore_out_dict["FFT_shifted_data"] = bc_w_zf_fft_data_shifted
+        hyscore_out_dict["data"] = bc_w_zf_fft_data_shifted_abs
+        hyscore_out_dict["dims"] = [frequency_axis2,frequency_axis1]
+        hyscore_out_dict["is_complex"] = False
+        hyscore_out_dict["history"].append([f"Processed HYSCORE dataset from {hyscore_out_dict["filepath"]}"])
+
+        return EprData(hyscore_out_dict)
