@@ -152,19 +152,19 @@ class TestEPR1d():
     def test_baseline_correction(self,test_load_1d):
 
         exp_data = np.load(data_dir+'/test_default_bc.npy')
-        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(npts=10).data,exp_data)
 
         exp_data = np.load(data_dir+'/test_poly2_bc.npy')
-        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='polynomial',order=2).data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(npts=10,method='polynomial',order=2).data,exp_data)
 
         exp_data = np.load(data_dir+'/test_poly2_bc_baseline.npy')
-        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='polynomial',order=2).baseline,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='polynomial',order=2,npts=10).baseline,exp_data)
 
         exp_data = np.load(data_dir+'/test_spline_bc.npy')
-        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='spline').data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='spline',npts=10).data,exp_data)
 
         exp_data = np.load(data_dir+'/test_spline_bc_baseline.npy')
-        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='spline').baseline,exp_data)
+        np.testing.assert_array_almost_equal(test_load_1d.baseline_correct(method='spline',npts=10).baseline,exp_data)
 
     def test_plot(self,test_load_1d):
         fig,ax=test_load_1d.plot()
@@ -200,7 +200,7 @@ class TestEPR2d():
     def test_baseline_correction(self,test_load_2d):
 
         exp_data = np.load(data_dir+'/test_default2d_bc.npy')
-        np.testing.assert_array_almost_equal(test_load_2d.baseline_correct().data,exp_data)
+        np.testing.assert_array_almost_equal(test_load_2d.baseline_correct(npts=10).data,exp_data)
 
     def test_plot(self,test_load_2d):
         fig,ax=test_load_2d.plot()
