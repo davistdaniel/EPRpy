@@ -22,12 +22,11 @@ def eprplot(eprdata_list, plot_type='stacked',
         - `data` (ndarray): Data array, which can be 1D or 2D, real or complex.
         - `acq_param` (dict): Acquisition parameters.
     
-    plot_type : {'stacked', 'superimposed', 'surf', 'contour'}, optional
+    plot_type : {'stacked', 'superimposed', 'surf', 'pcolor'}, optional
         The type of plot to generate for 2D data. Options are:
         - 'stacked' (default): Stacks slices with specified spacing.
         - 'superimposed': Overlays all slices.
         - 'surf': Creates a 3D surface plot.
-        - 'contour': Creates a 2D contour plot.
 
     slices : {'all', list, range}, optional
         Specifies which slices to plot for 2D data. Options include:
