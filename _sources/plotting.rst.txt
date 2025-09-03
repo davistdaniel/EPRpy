@@ -31,7 +31,7 @@ For complex data, imaginary part can be be visualized by setting ``plot_imag`` t
 .. image:: images/plt_with_imag.png
    :width: 400px
 
-See more `plotting examples <notebooks/examples.html#Plotting>`_ for 1D data.
+See more plotting `examples <notebooks/examples.html#Plotting>`_ for 1D data.
 
 
 2D data can be visualized similarly and has a selection of plot types as shown below. 
