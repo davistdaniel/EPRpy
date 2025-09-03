@@ -3,6 +3,8 @@ from datetime import datetime
 from copy import deepcopy
 from scipy.interpolate import UnivariateSpline
 from scipy.ndimage import gaussian_filter1d
+from scipy.optimize import curve_fit
+from scipy.signal import find_peaks
 
 # EPRpy
 from eprpy.plotter import interactive_points_selector
@@ -86,7 +88,7 @@ def _integrate(eprdata):
 
 
 def _baseline_correct(
-    eprdata, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2
+    eprdata, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False
 ):
     """
     Perform baseline correction on the data in an `EprData` object.
@@ -136,7 +138,7 @@ def _baseline_correct(
 
     if y.ndim == 2:
         bc_data, baselines = _baseline_correct_2d(
-            x, y, interactive, npts, method, spline_smooth, order
+            x, y, interactive, npts, method, spline_smooth, order,init_vals,bounds,fit_eseem_max
         )
         eprdata_proc.data = bc_data
         eprdata_proc.baseline = baselines
@@ -145,49 +147,88 @@ def _baseline_correct(
         )
 
     elif y.ndim == 1:
-        if interactive:
-            baseline_points = interactive_points_selector(x, y)
-        else:
-            baseline_points = np.concatenate(
-                [np.arange(npts), np.arange(len(y) - npts, len(y))]
-            )
+        bc_data,baseline = _baseline_correct_1d(x, y, interactive, npts, method, spline_smooth, order,init_vals,bounds,fit_eseem_max
+        )
 
-        # Use the specified baseline points for fitting
-        if baseline_points is not None and len(baseline_points) > 0:
-            x_fit = x[baseline_points]
-            y_fit = y[baseline_points]
-        else:
-            # If no baseline points are selected, raise an error or use a default (e.g., endpoints)
-            raise ValueError(
-                "No baseline points selected. Please select points for baseline correction."
-            )
-
-        # Baseline fitting based on selected method
-        if method == "linear":
-            coeffs = np.polyfit(x_fit, y_fit, 1)
-            baseline = np.polyval(coeffs, x)
-        elif method == "polynomial":
-            coeffs = np.polyfit(x_fit, y_fit, order)
-            baseline = np.polyval(coeffs, x)
-        elif method == "spline":
-            spline = UnivariateSpline(x_fit, y_fit, s=spline_smooth)
-            baseline = spline(x)
-        else:
-            raise ValueError("Method must be 'linear', 'polynomial', or 'spline'.")
-
-        bc_corr = y - baseline
-
+        eprdata_proc.data = bc_data
         eprdata_proc.baseline = baseline
-        eprdata_proc.data = bc_corr
         eprdata_proc.history.append(
             [f"{str(datetime.now())} : Baseline corrected", deepcopy(eprdata_proc)]
         )
 
     return eprdata_proc
 
+def _exponential_decay(x,c,tau,y_offset):
+    """
+    Returns an exponential_decay. 
+
+    Parameters
+    ----------
+    x : [np.ndarray]
+        x-array
+    c : [float]
+        Amplitude
+    tau : [float]
+        Time constant
+    y_offset : [float]
+        Offset of y.
+
+    Returns
+    -------
+    [np.ndarray]
+        An exponential decay.
+    """    
+
+    return c*(np.exp(-(x/tau)))+y_offset
+
+def _baseline_correct_1d(x,y, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False):
+    if np.iscomplexobj(y):
+        y = y.real
+    if interactive:
+            baseline_points = interactive_points_selector(x, y)
+    else:
+        if npts>0:
+            baseline_points = np.concatenate(
+                [np.arange(npts), np.arange(len(y) - npts, len(y))]
+            )
+        else:
+            baseline_points = np.arange(len(y))
+
+    # Use the specified baseline points for fitting
+    if baseline_points is not None and len(baseline_points) > 0:
+        x_fit = x[baseline_points]
+        y_fit = y[baseline_points]
+    else:
+        raise ValueError(
+            "No baseline points selected. Please select points for baseline correction."
+        )
+
+    # Baseline fitting based on selected method
+    if method == "linear":
+        coeffs = np.polyfit(x_fit, y_fit, 1)
+        baseline = np.polyval(coeffs, x)
+    elif method == "polynomial":
+        coeffs = np.polyfit(x_fit, y_fit, order)
+        baseline = np.polyval(coeffs, x)
+    elif method == "spline":
+        spline = UnivariateSpline(x_fit, y_fit, s=spline_smooth)
+        baseline = spline(x)
+    elif method == "exponential_decay":
+        if fit_eseem_max:
+            peaks,_ = find_peaks(y_fit)
+            x_fit,y_fit = x_fit[peaks],y_fit[peaks]
+        if init_vals is None:
+            c,tau,y_offset = np.max(x_fit)-np.min(y_fit),-1*x[np.argmin(np.abs((np.mean(y)-y)))]/np.log(0.5),np.min(y_fit)
+            init_vals = [c,tau,y_offset]
+        best_vals, covar = curve_fit(_exponential_decay, x_fit, y_fit, p0=init_vals,bounds=bounds)
+        baseline = _exponential_decay(x,*best_vals)
+    else:
+        raise ValueError("Method must be 'linear', 'polynomial', or 'spline'.")
+
+    return y - baseline, baseline
 
 def _baseline_correct_2d(
-    x, y, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2
+    x, y, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False
 ):
     """
     Perform baseline correction on 2D data.
@@ -241,13 +282,20 @@ def _baseline_correct_2d(
     if interactive:
         baseline_points = interactive_points_selector(x, y[0])
     else:
-        baseline_points = np.concatenate(
-            [np.arange(npts), np.arange(len(y[0]) - npts, len(y[0]))]
-        )
+        if npts>0:
+            baseline_points = np.concatenate(
+                [np.arange(npts), np.arange(len(y[0]) - npts, len(y[0]))]
+            )
+        else:
+            baseline_points = np.arange(len(y[0]))
 
     baselines = np.empty_like(y)
     if baseline_points is not None and len(baseline_points) > 0:
         x_fit = x[baseline_points]
+    else:
+        raise ValueError(
+            "No baseline points selected. Please select points for baseline correction." # redundant
+        )
 
     for idx, arr in enumerate(y):
         y_fit = arr[baseline_points]
@@ -260,6 +308,15 @@ def _baseline_correct_2d(
         elif method == "spline":
             spline = UnivariateSpline(x_fit, y_fit, s=spline_smooth)
             baseline = spline(x)
+        elif method == "exponential_decay":
+            if fit_eseem_max:
+                peaks,_ = find_peaks(y_fit)
+                x_fit,y_fit = x_fit[peaks],y_fit[peaks]
+            if init_vals is None:
+                c,tau,y_offset = np.max(x_fit)-np.min(y_fit),-1*x[np.argmin(np.abs((np.mean(y)-y)))]/np.log(0.5),np.min(y_fit)
+                init_vals = [c,tau,y_offset]
+            best_vals, covar = curve_fit(_exponential_decay, x_fit, y_fit, p0=init_vals,bounds=bounds)
+            baseline = _exponential_decay(x,*best_vals)
         else:
             raise ValueError("Method must be 'linear', 'polynomial', or 'spline'.")
 
