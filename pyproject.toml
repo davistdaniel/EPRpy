@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eprpy"
-version = "0.9.0a8"
+version = "0.9.0b1"
 description = "A Python library for working with EPR spectroscopic data."
 readme = "README.md"
 requires-python = ">=3.9, <=3.13"
@@ -12,7 +12,7 @@ authors = [
     { name = "Davis Thomas Daniel", email = "davisthomasdaniel@gmail.com" }
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -28,6 +28,16 @@ dependencies = [
     "numpy",
     "scipy",
     "matplotlib"
+]
+
+[project.optional-dependencies]
+develop = [
+    'pytest',
+    'pytest-cov',
+    'sphinx',
+    'nbsphinx==0.9.7',
+    'furo==2025.7.19',
+    'sphinx-copybutton==0.5.2'
 ]
 
 [project.urls]
