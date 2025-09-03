@@ -2,7 +2,7 @@ from setuptools import setup, find_packages  # type: ignore
 
 setup(
     name='eprpy',
-    version='0.9.0a8',
+    version='0.9.0b1',
     description="A Python library for working with EPR spectroscopic data.",
     long_description=open("README.md").read(),  
     long_description_content_type="text/markdown",  
@@ -11,7 +11,7 @@ setup(
     author_email="davisthomasdaniel@gmail.com",  
     url="https://github.com/davistdaniel/EPRpy",  
     classifiers=[
-        "Development Status :: 3 - Alpha",  
+        "Development Status :: 4 - Beta",  
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -34,4 +34,13 @@ setup(
         "Documentation": "https://davistdaniel.github.io/EPRpy/",
         "Source Code": "https://github.com/davistdaniel/EPRpy",
     },
+    extras_require={
+        "develop": [
+            'pytest',
+            'pytest-cov',
+            'sphinx',
+            'nbsphinx==0.9.7',
+            'furo==2025.7.19',
+            'sphinx-copybutton==0.5.2'
+        ]}
 )

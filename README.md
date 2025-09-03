@@ -25,12 +25,10 @@ For EPRpy documentation, see [here](https://davistdaniel.github.io/EPRpy/). Sour
 ## Features
 
 * Read and export EPR data acquired on Bruker EPR spectrometers.
-* Basic processing capabilities such as [interactive baseline correction](https://davistdaniel.github.io/EPRpy/notebooks/examples.html#Baseline-correction), integration etc.
+* Data processing capabilities such as [interactive baseline correction](https://davistdaniel.github.io/EPRpy/notebooks/examples.html#Baseline-correction), integration etc.
 * [Interactive data inspection](https://davistdaniel.github.io/EPRpy/plotting.html#interactive-plots) for 1D and 2D datasets.
 * Generate quick plots of 1D and 2D datasets, compare different datasets.
-
-## Upcoming 
-* Automated workflow templates for specific EPR experiments
+* [Automated processing pipelines](https://davistdaniel.github.io/EPRpy/notebooks/examples.html#Workflows) for specific pulse programs. Read more about [workflows](https://davistdaniel.github.io/EPRpy/workflows.html).
 
 ## Limitations
 * Supports reading of files only in Bruker BES3T format v.1.2 and upto 2D datasets.

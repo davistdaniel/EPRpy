@@ -7,8 +7,10 @@ from copy import deepcopy
 
 # EPRpy
 from eprpy.plotter import eprplot
-from eprpy.processor import _integrate,_scale_between,_baseline_correct
+from eprpy.processor import _integrate,_scale_between,_baseline_correct,_derivative
+from eprpy.workflows import EprWorkflow
 
+warnings.simplefilter("always")
 
 def load(filepath):
 
@@ -38,7 +40,8 @@ def load(filepath):
 
     out_dict = {'dims':None,
                 'data':None,
-                'acq_param':None}
+                'acq_param':None,
+                'workflow_type':None}
 
     dta_filepath,dsc_filepath = check_filepaths(filepath)
     dsc_parameter_dict = read_DSC_file(dsc_filepath)
@@ -411,7 +414,17 @@ class EprData():
             self.g = ((float(self.acq_param['MWFQ'])/1e+9)/(13.996*(x_g/10000)))
         else:
             self.g = None
-        self.history[0].append(deepcopy(self))
+        self.workflow_type = out_dict['workflow_type']
+        self.history[-1].append(deepcopy(self))
+
+        try:
+            self.pulse_program = self.acq_param["PlsSPELEXPSlct"]
+        except Exception as e:
+            print(
+                "Error ocurred while reading pulse program parameter PlsSPELEXPSlct from DSC file : ",
+                e,
+            )
+            self.pulse_program = "Unknown"
 
     
     def plot(self,g_scale=False,plot_type='stacked', slices='all', spacing=0.5,plot_imag=True,interactive=False):
@@ -429,17 +442,13 @@ class EprData():
         eprdata_proc = _integrate(self)
         return eprdata_proc
 
-    def baseline_correct(self,interactive=False,
-                      npts=10,method='linear',spline_smooth=1e-5,
-                      order=2):
+    def baseline_correct(self,interactive=False, npts=0, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False):
         
-        eprdata_proc = _baseline_correct(self,interactive,
-                          npts,method,spline_smooth,order)
+        eprdata_proc = _baseline_correct(self,interactive, npts, method, spline_smooth, order,init_vals,bounds,fit_eseem_max)
         return eprdata_proc
 
         
     def select_region(self,region):
-
 
         assert type(region) in [range,list],'region keyword must be a range object or list.'
         out_dict = deepcopy(self.data_dict)
@@ -447,6 +456,24 @@ class EprData():
         out_dict['data'] =  out_dict['data'][...,region]
 
         return EprData(out_dict)
+    
+    def derivative(self,sigma=1,axis=-1):
 
+        epr_data_proc = _derivative(self,sigma,axis)
+        return epr_data_proc
+
+    def workflow(self,zf=0,poly_order=3,x_max=None,pick_eseem_points=False,symmetrise=False,verbose=False):
+
+        if self.pulse_program == "HYSCORE":
+            hyscore_out_dict = EprWorkflow(eprdata=self,zf=zf,poly_order=poly_order,x_max=x_max,pick_eseem_points=pick_eseem_points,symmetrise=symmetrise,verbose=verbose).hyscore()
+            return EprData(hyscore_out_dict)
         
+        elif self.pulse_program in ["2P ESEEM", "3P ESEEM","2P ESEEM vs. B0","3P ESEEM vs. B0","3P ESEEM vs tau"]:
+            eseem_out_dict = EprWorkflow(eprdata=self,zf=zf,poly_order=poly_order,x_max=x_max,pick_eseem_points=pick_eseem_points,verbose=verbose).eseem()
+            return EprData(eseem_out_dict)
         
+        else:
+            raise ValueError(f"No supported workflows found for the pulse program : {self.pulse_program}")
+
+
+
