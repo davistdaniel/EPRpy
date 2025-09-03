@@ -1,0 +1,9 @@
+v0.9.0b1
+
+* Added Workflows for HYSCORE, ESEEM experiments
+* Updated tests in accordance with change of the parameter default for `npts`.
+* Updated docs with Workflow examples
+* Other minor updates to documentation
+* Logo adapted also for dark backgrounds.
+* Added exponential decay as a background correction function.
+* Added workflow method to EprData, detects experiment type from pulse program
