@@ -7,3 +7,6 @@ v0.9.0b1
 * Logo adapted also for dark backgrounds.
 * Added exponential decay as a background correction function.
 * Added workflow method to EprData, detects experiment type from pulse program
+
+v0.9.0b2
+* bug fix, pulse program is only detected for pulsed Experiments.

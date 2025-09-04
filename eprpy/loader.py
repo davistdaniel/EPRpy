@@ -417,13 +417,9 @@ class EprData():
         self.workflow_type = out_dict['workflow_type']
         self.history[-1].append(deepcopy(self))
 
-        try:
+        if "PlsSPELEXPSlct" in self.acq_param:
             self.pulse_program = self.acq_param["PlsSPELEXPSlct"]
-        except Exception as e:
-            print(
-                "Error ocurred while reading pulse program parameter PlsSPELEXPSlct from DSC file : ",
-                e,
-            )
+        else:
             self.pulse_program = "Unknown"
 
     
