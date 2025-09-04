@@ -30,6 +30,16 @@ For EPRpy documentation, see [here](https://davistdaniel.github.io/EPRpy/). Sour
 * Generate quick plots of 1D and 2D datasets, compare different datasets.
 * [Automated processing pipelines](https://davistdaniel.github.io/EPRpy/notebooks/examples.html#Workflows) for specific pulse programs. Read more about [workflows](https://davistdaniel.github.io/EPRpy/workflows.html).
 
+## Contributing
+
+Contributions are very welcome!
+
+* Report issues – If you find a bug, unexpected behavior, or just a typo in the documentation, please let me know or open an issue.
+* Submit improvements – Bug fixes, performance tweaks, new features, or cleaner code are always appreciated.
+* Improve docs – Clear examples, tutorials, and explanations are as valuable as code contributions.
+* Share ideas – Suggestions for new functionality or workflows are great input for shaping the library.
+
+
 ## Limitations
 * Supports reading of files only in Bruker BES3T format v.1.2 and upto 2D datasets.
 
