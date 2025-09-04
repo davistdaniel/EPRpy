@@ -54,3 +54,10 @@ Using EPRpy
    EprData
    Examples
 
+.. toctree::
+   :maxdepth: 1
+   :caption: References
+
+   GitHub <https://github.com/davistdaniel/EPRpy>
+   PyPi <https://pypi.org/project/eprpy/>
+
