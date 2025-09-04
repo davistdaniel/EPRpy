@@ -32,7 +32,7 @@ jobs:
         run: |
           pip install .
           pip install sphinx
-          pip install nbsphinx furo
+          pip install nbsphinx furo sphinx-copybutton
           pip install pygments ipython --upgrade
 
       - name: Build documentation
