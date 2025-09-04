@@ -27,4 +27,6 @@ html_theme = 'furo'
 html_static_path = ['_static']
 html_logo = "images/eprpy_logo.png"
 html_show_sourcelink = False
-
+html_favicon = 'images/favicon.svg'
+html_theme_options = {
+    "sidebar_hide_name": True}
