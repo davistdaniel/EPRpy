@@ -985,7 +985,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -1001,7 +1001,7 @@
       "Generating frequency axes...\n",
       "2D Fourier transformation...\n",
       "Symmetrising along the diagonal and the antidiagonal...\n",
-      "Completed in 0.08 seconds.\n"
+      "Completed in 0.12 seconds.\n"
      ]
     }
    ],
@@ -1017,7 +1017,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 7,
    "metadata": {},
    "outputs": [
     {
@@ -1047,7 +1047,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": 8,
    "metadata": {},
    "outputs": [
     {
@@ -1083,7 +1083,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -1092,7 +1092,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [
     {
@@ -1112,7 +1112,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [
     {
@@ -1121,7 +1121,7 @@
        "'2P ESEEM'"
       ]
      },
-     "execution_count": 4,
+     "execution_count": 11,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -1132,7 +1132,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 6,
+   "execution_count": 12,
    "metadata": {},
    "outputs": [
     {
@@ -1156,7 +1156,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 13,
    "metadata": {},
    "outputs": [
     {
