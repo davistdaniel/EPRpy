@@ -1,0 +1,27 @@
+name: "Upload eprpy to pypi"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+      - name: Set up Python
+        run: uv python install 3.13
+      - name: Build
+        run: uv build
+      - name: eprpy import test (wheel)
+        run: uv run --isolated --no-project --with dist/*.whl python -c "import eprpy as epr"
+      - name: Publish
+        run: uv publish
