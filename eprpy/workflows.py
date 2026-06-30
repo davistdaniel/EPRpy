@@ -107,7 +107,7 @@ class EprWorkflow:
         x_max=None,
         pick_eseem_points=False,
         symmetrise=False,
-        verbose=False
+        verbose=False,
     ):
         self.eprdata = deepcopy(eprdata)
 
@@ -123,9 +123,8 @@ class EprWorkflow:
 
         self.x_max = x_max
         self.pick_eseem_points = pick_eseem_points
-        self.symmetrise = symmetrise,
+        self.symmetrise = symmetrise
         self.verbose = verbose
-
 
     def hyscore(self):
         """
@@ -167,11 +166,10 @@ class EprWorkflow:
 
         vprint = print if self.verbose is True else lambda *args, **kwargs: None
         start_time = time.time()
-        
 
         if self.eprdata.pulse_program != "HYSCORE":
             raise ValueError(f"Unknown pulse program : {self.eprdata.pulse_program}")
-        
+
         vprint("Starting HYSCORE workflow...")
         hyscore_out_dict = self.eprdata.data_dict
         hyscore_out_dict["proc_param"] = {
@@ -186,11 +184,12 @@ class EprWorkflow:
 
         hyscore_out_dict["raw_data"] = self.eprdata.data
         x, y = self.eprdata.x, self.eprdata.y
-        hyscore_out_dict["x_raw"],hyscore_out_dict["y_raw"] = x,y
+        hyscore_out_dict["x_raw"], hyscore_out_dict["y_raw"] = x, y
         real_data = self.eprdata.data.real
 
-            
-        vprint(f"Baseline correction in dimension 1 with polynomial of order {self.poly_order}...")
+        vprint(
+            f"Baseline correction in dimension 1 with polynomial of order {self.poly_order}..."
+        )
         # baseline correction
         bc_data1, bc1 = _baseline_correct_2d(
             x,
@@ -201,7 +200,9 @@ class EprWorkflow:
             order=self.poly_order,
         )
 
-        vprint(f"Baseline correction in dimension 2 with polynomial of order {self.poly_order}...")
+        vprint(
+            f"Baseline correction in dimension 2 with polynomial of order {self.poly_order}..."
+        )
         hyscore_out_dict["baseline_dim1"] = bc1
         bc_data2, bc2 = _baseline_correct_2d(
             y,
@@ -217,15 +218,14 @@ class EprWorkflow:
         # windowing
         window1 = _hamming_window(x, x_max=self.x_max)
         window2 = _hamming_window(y, x_max=self.x_max)
-        vprint(f"Applying Hamming window in dimension 1...")
+        vprint("Applying Hamming window in dimension 1...")
         bc_w_data1 = hyscore_out_dict["bc_data"] * window1
-        vprint(f"Applying Hamming window in dimension 2...")
+        vprint("Applying Hamming window in dimension 2...")
         bc_w_data2 = bc_w_data1.T * window2
         hyscore_out_dict["bc_w_data"] = bc_w_data2.T
         hyscore_out_dict["window_dim1"] = window1
         hyscore_out_dict["window_dim2"] = window2
 
-       
         if self.zf[-1] != 0:
             vprint(f"Zero filling {self.zf[-1]} points dimension 1 and 2...")
             x_spacing, y_spacing = np.mean(np.diff(x)), np.mean(np.diff(y))
@@ -241,13 +241,13 @@ class EprWorkflow:
                 hyscore_out_dict["bc_w_data"], self.zf
             )
         else:
-            vprint(f"Skipped zero filling...")
+            vprint("Skipped zero filling...")
             hyscore_out_dict["time_axis1"] = x
             hyscore_out_dict["time_axis2"] = y
             hyscore_out_dict["bc_w_zf_data"] = hyscore_out_dict["bc_w_data"]
 
         # 2DFFT
-        vprint(f"Generating frequency axes...")
+        vprint("Generating frequency axes...")
         hyscore_out_dict["frequency_axis1"] = _generate_freq_axis(
             self.eprdata, hyscore_out_dict["time_axis1"]
         )
@@ -256,7 +256,7 @@ class EprWorkflow:
         )
 
         # fft
-        vprint(f"2D Fourier transformation...")
+        vprint("2D Fourier transformation...")
         hyscore_out_dict["FFT_data"] = np.fft.fft2(hyscore_out_dict["bc_w_zf_data"])
         hyscore_out_dict["FFT_shifted_data"] = np.fft.fftshift(
             hyscore_out_dict["FFT_data"]
@@ -265,16 +265,30 @@ class EprWorkflow:
 
         ## symmetrise
         if self.symmetrise is not False:
-            if self.symmetrise == 'diag':
-                vprint(f"Symmetrising along the diagonal...")
-                bc_w_zf_fft_data_shifted_abs = np.sqrt(bc_w_zf_fft_data_shifted_abs*bc_w_zf_fft_data_shifted_abs.T)
-            elif self.symmetrise  == 'antidiag':
-                vprint(f"Symmetrising along the antidiagonal...")
-                bc_w_zf_fft_data_shifted_abs = np.fliplr(np.sqrt(np.fliplr(bc_w_zf_fft_data_shifted_abs)*(np.fliplr(bc_w_zf_fft_data_shifted_abs).T)))
+            if self.symmetrise == "diag":
+                vprint("Symmetrising along the diagonal...")
+                bc_w_zf_fft_data_shifted_abs = np.sqrt(
+                    bc_w_zf_fft_data_shifted_abs * bc_w_zf_fft_data_shifted_abs.T
+                )
+            elif self.symmetrise == "antidiag":
+                vprint("Symmetrising along the antidiagonal...")
+                bc_w_zf_fft_data_shifted_abs = np.fliplr(
+                    np.sqrt(
+                        np.fliplr(bc_w_zf_fft_data_shifted_abs)
+                        * (np.fliplr(bc_w_zf_fft_data_shifted_abs).T)
+                    )
+                )
             else:
-                vprint(f"Symmetrising along the diagonal and the antidiagonal...")
-                bc_w_zf_fft_data_shifted_abs = np.sqrt(bc_w_zf_fft_data_shifted_abs*bc_w_zf_fft_data_shifted_abs.T)
-                bc_w_zf_fft_data_shifted_abs = np.fliplr(np.sqrt(np.fliplr(bc_w_zf_fft_data_shifted_abs)*(np.fliplr(bc_w_zf_fft_data_shifted_abs).T)))
+                vprint("Symmetrising along the diagonal and the antidiagonal...")
+                bc_w_zf_fft_data_shifted_abs = np.sqrt(
+                    bc_w_zf_fft_data_shifted_abs * bc_w_zf_fft_data_shifted_abs.T
+                )
+                bc_w_zf_fft_data_shifted_abs = np.fliplr(
+                    np.sqrt(
+                        np.fliplr(bc_w_zf_fft_data_shifted_abs)
+                        * (np.fliplr(bc_w_zf_fft_data_shifted_abs).T)
+                    )
+                )
 
         # output as dict
         hyscore_out_dict["data"] = (
@@ -288,7 +302,7 @@ class EprWorkflow:
         hyscore_out_dict["history"].append(
             [f"Processed HYSCORE dataset from {hyscore_out_dict['filepath']}"]
         )
-        vprint(f"Completed in {(time.time()-start_time):.2f} seconds.")
+        vprint(f"Completed in {(time.time() - start_time):.2f} seconds.")
         return hyscore_out_dict
 
     def eseem(self):
@@ -347,9 +361,9 @@ class EprWorkflow:
             )
         else:
             raise ValueError(f"Unknown pulse program : {self.eprdata.pulse_program}")
-        
+
         vprint("Starting ESEEM workflow...")
-        
+
         eseem_out_dict = self.eprdata.data_dict
         eseem_out_dict["proc_param"] = {
             "pulse_program": self.eprdata.pulse_program,
@@ -370,7 +384,7 @@ class EprWorkflow:
         # background correction
         if self.eprdata.data.ndim == 1:
             if self.eprdata.pulse_program == "2P ESEEM":
-                vprint(f"Baseline correction using an exponential decay function...")
+                vprint("Baseline correction using an exponential decay function...")
                 bc_data, baseline = _baseline_correct_1d(
                     x,
                     real_data,
@@ -379,18 +393,22 @@ class EprWorkflow:
                     npts=0,
                 )
             elif self.eprdata.pulse_program == "3P ESEEM":
-                vprint(f"Baseline correction in dimension 1 with polynomial of order {self.poly_order}...")
+                vprint(
+                    f"Baseline correction in dimension 1 with polynomial of order {self.poly_order}..."
+                )
                 bc_data, baseline = _baseline_correct_1d(
                     x, real_data, method="polynomial", npts=0, order=self.poly_order
                 )
             else:
-                raise ValueError(f"Unknown pulse program : {self.eprdata.pulse_program}")
+                raise ValueError(
+                    f"Unknown pulse program : {self.eprdata.pulse_program}"
+                )
 
             eseem_out_dict["baseline_dim1"] = baseline
 
         elif self.eprdata.data.ndim == 2:
             if self.eprdata.pulse_program == "2P ESEEM vs. B0":
-                vprint(f"Baseline correction using an exponential decay function...")
+                vprint("Baseline correction using an exponential decay function...")
                 bc_data, baselines = _baseline_correct_2d(
                     x,
                     real_data,
@@ -402,19 +420,23 @@ class EprWorkflow:
                 self.eprdata.pulse_program == "3P ESEEM vs. B0"
                 or self.eprdata.pulse_program == "3P ESEEM vs tau"
             ):
-                vprint(f"Baseline correction in dimension 1 with polynomial of order {self.poly_order}...")
+                vprint(
+                    f"Baseline correction in dimension 1 with polynomial of order {self.poly_order}..."
+                )
                 bc_data, baselines = _baseline_correct_2d(
                     x, real_data, method="polynomial", npts=0, order=self.poly_order
                 )
             else:
-                raise ValueError(f"Unknown pulse program : {self.eprdata.pulse_program}")
+                raise ValueError(
+                    f"Unknown pulse program : {self.eprdata.pulse_program}"
+                )
 
             eseem_out_dict["baseline_dim1"] = baselines
 
         eseem_out_dict["bc_data"] = bc_data
 
         # windowing
-        vprint(f"Applying Hamming window along dimension 1...")
+        vprint("Applying Hamming window along dimension 1...")
         window = _hamming_window(x, x_max=self.x_max)
         bc_w_data = bc_data * window
         eseem_out_dict["window_dim1"] = window
@@ -441,18 +463,20 @@ class EprWorkflow:
                     constant_values=0,
                 )
         else:
-            vprint(f"Skipping zero filling...")
+            vprint("Skipping zero filling...")
             eseem_out_dict["time_axis1"] = x
             bc_w_zf_data = bc_w_data
 
         eseem_out_dict["bc_w_zf_data"] = bc_w_zf_data
 
         # FFT
-        vprint(f"Generating frequency axes...")
-        frequency_axis1 = _generate_freq_axis(self.eprdata,eseem_out_dict["time_axis1"])
+        vprint("Generating frequency axes...")
+        frequency_axis1 = _generate_freq_axis(
+            self.eprdata, eseem_out_dict["time_axis1"]
+        )
 
         # fft shift
-        vprint(f"Fourier transformation...")
+        vprint("Fourier transformation...")
         bc_w_zf_fft_data = np.fft.fft(bc_w_zf_data, axis=-1)
         bc_w_zf_fft_data_shifted = np.fft.fftshift(bc_w_zf_fft_data)
         bc_w_zf_fft_data_shifted_abs = np.absolute(bc_w_zf_fft_data_shifted)
@@ -471,6 +495,6 @@ class EprWorkflow:
         eseem_out_dict["history"].append(
             [f"Processed ESEEM dataset from {eseem_out_dict['filepath']}"]
         )
-        vprint(f"Completed in {(time.time()-start_time):.2f} seconds.")
+        vprint(f"Completed in {(time.time() - start_time):.2f} seconds.")
 
         return eseem_out_dict

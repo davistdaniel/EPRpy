@@ -3,14 +3,21 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.widgets import Button, Slider
 import warnings
-warnings.simplefilter('always')
+
+warnings.simplefilter("always")
 
 color_cycle = plt.cm.tab10.colors[:10]
 
-def eprplot(eprdata_list, plot_type='stacked', 
-            slices='all', spacing=0.5, 
-            plot_imag=True,g_scale=False, interactive=False):
 
+def eprplot(
+    eprdata_list,
+    plot_type="stacked",
+    slices="all",
+    spacing=0.5,
+    plot_imag=True,
+    g_scale=False,
+    interactive=False,
+):
     """
     Plot one or multiple EPR data objects for visualization and comparison.
 
@@ -21,7 +28,7 @@ def eprplot(eprdata_list, plot_type='stacked',
         - `filepath` (str): Path to the data file.
         - `data` (ndarray): Data array, which can be 1D or 2D, real or complex.
         - `acq_param` (dict): Acquisition parameters.
-    
+
     plot_type : {'stacked', 'superimposed', 'surf', 'pcolor'}, optional
         The type of plot to generate for 2D data. Options are:
         - 'stacked' (default): Stacks slices with specified spacing.
@@ -41,7 +48,7 @@ def eprplot(eprdata_list, plot_type='stacked',
         If `True`, includes the imaginary part of the data in the plot. Default is `True`.
 
     g_scale : bool, optional
-        If `True` and `EprData.g` is not `None`, plots the data on a g-factor scale 
+        If `True` and `EprData.g` is not `None`, plots the data on a g-factor scale
         and inverts the x-axis. Default is `False`.
 
     Returns
@@ -55,42 +62,47 @@ def eprplot(eprdata_list, plot_type='stacked',
     -----
     - For 1D data, all `EprData` objects in the list must have 1D data.
     - For 2D data, all `EprData` objects in the list must have 2D data.
-    - The function automatically handles plotting based on the data dimensions 
+    - The function automatically handles plotting based on the data dimensions
       (1D or 2D) and the specified plot type.
-    - If `g_scale` is enabled and `EprData.g` is available, the x-axis is inverted 
+    - If `g_scale` is enabled and `EprData.g` is available, the x-axis is inverted
       for better visualization of g-factor values.
     """
 
-    
     if not isinstance(eprdata_list, list):
-        eprdata_list = [eprdata_list]  # Convert single object to a list for uniform handling
-    
-    if eprdata_list[0].data.ndim==1:
-        assert all([i.data.ndim==1 for i in eprdata_list]), 'Only datasets with same number of dimensions can be compared.'
-        ndim=1
-    if eprdata_list[0].data.ndim==2:
-        assert all([i.data.ndim==2 for i in eprdata_list]), 'Only datasets with same number of dimensions can be compared.'
-        ndim=2
+        eprdata_list = [
+            eprdata_list
+        ]  # Convert single object to a list for uniform handling
 
-    if ndim==1:
-        fig,ax = plot_1d(eprdata_list,g_scale,plot_imag)
-    elif ndim==2:
-        fig,ax = plot_2d(eprdata_list,g_scale,plot_type, slices, spacing)
+    if eprdata_list[0].data.ndim == 1:
+        assert all([i.data.ndim == 1 for i in eprdata_list]), (
+            "Only datasets with same number of dimensions can be compared."
+        )
+        ndim = 1
+    if eprdata_list[0].data.ndim == 2:
+        assert all([i.data.ndim == 2 for i in eprdata_list]), (
+            "Only datasets with same number of dimensions can be compared."
+        )
+        ndim = 2
 
-    if plot_type not in ['slider','surf']:
-        fig.set_size_inches((4,3))
+    if ndim == 1:
+        fig, ax = plot_1d(eprdata_list, g_scale, plot_imag)
+    elif ndim == 2:
+        fig, ax = plot_2d(eprdata_list, g_scale, plot_type, slices, spacing)
+
+    if plot_type not in ["slider", "surf"]:
+        fig.set_size_inches((4, 3))
         fig.tight_layout()
-    
-    if g_scale and eprdata_list[0].g is not None: 
+
+    if g_scale and eprdata_list[0].g is not None:
         ax.invert_xaxis()
-    
-    if interactive:
+
+    if interactive and plot_type not in ["slider", "surf"]:
         data_cursor(fig)
-    
-    return fig,ax
 
-def plot_1d(eprdata_list,g_scale,plot_imag=True):
+    return fig, ax
 
+
+def plot_1d(eprdata_list, g_scale, plot_imag=True):
     """
     Plot 1D EPR data from multiple `EprData` objects.
 
@@ -101,7 +113,7 @@ def plot_1d(eprdata_list,g_scale,plot_imag=True):
         - `data` (ndarray): 1D data array (real or complex).
         - `x` (ndarray): x-axis values corresponding to the data.
         - `g` (ndarray, optional): g-factor values, if applicable.
-    
+
     g_scale : bool
         If `True`, plots the data on a g-factor scale (using `g` if available). Default is `False`.
 
@@ -117,22 +129,21 @@ def plot_1d(eprdata_list,g_scale,plot_imag=True):
 
     Notes
     -----
-    - If `g_scale` is enabled and the `g` attribute is present in the `EprData` object, 
+    - If `g_scale` is enabled and the `g` attribute is present in the `EprData` object,
       it will be used for the x-axis. Otherwise, the x-values (`x`) will be used.
     - Complex data is plotted with the real and imaginary parts (if `plot_imag` is `True`).
     - The function uses a cycling color scheme for each plot in `eprdata_list`.
     """
-    
+
     c_idx = -1
 
     # initiate plot
-    fig,ax = plt.subplots()
+    fig, ax = plt.subplots()
 
     for idx, eprdata in enumerate(eprdata_list):
-
-        if c_idx>=9:
-            c_idx=-1
-        c_idx+=1
+        if c_idx >= 9:
+            c_idx = -1
+        c_idx += 1
 
         data = eprdata.data
         if g_scale:
@@ -140,22 +151,28 @@ def plot_1d(eprdata_list,g_scale,plot_imag=True):
                 x = eprdata.g
             else:
                 x = eprdata.x
-                warnings.warn('Unable to set g values as axis.')  
+                warnings.warn("Unable to set g values as axis.")
         else:
             x = eprdata.x
 
         if np.iscomplexobj(data):
-            ax.plot(x,np.real(data), label='Real',color=color_cycle[c_idx])
+            ax.plot(x, np.real(data), label="Real", color=color_cycle[c_idx])
             if plot_imag:
-                ax.plot(x,np.imag(data), '--', alpha=0.5, label='Imaginary',color=color_cycle[c_idx])
+                ax.plot(
+                    x,
+                    np.imag(data),
+                    "--",
+                    alpha=0.5,
+                    label="Imaginary",
+                    color=color_cycle[c_idx],
+                )
         else:
-            ax.plot(x,data, label='Real',color=color_cycle[c_idx])
-    
-    return fig,ax
-        
+            ax.plot(x, data, label="Real", color=color_cycle[c_idx])
 
-def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
+    return fig, ax
 
+
+def plot_2d(eprdata_list, g_scale, plot_type="stacked", slices="all", spacing=0.5):
     """
     Plot 2D EPR data from multiple `EprData` objects.
 
@@ -167,7 +184,7 @@ def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
         - `x` (ndarray): x-axis values corresponding to the data.
         - `y` (ndarray): y-axis values corresponding to the data.
         - `g` (ndarray, optional): g-factor values, if applicable.
-    
+
     g_scale : bool
         If `True`, plots the data on a g-factor scale (using `g` if available). Default is `False`.
 
@@ -196,10 +213,10 @@ def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
 
     Notes
     -----
-    - For 2D data, the function selects slices based on the `slices` parameter and 
+    - For 2D data, the function selects slices based on the `slices` parameter and
       visualizes them using one of the specified plot types.
     - The color scheme for the slices is determined by a gradual color map.
-    - If `g_scale` is enabled and the `g` attribute is available in the `EprData` object, 
+    - If `g_scale` is enabled and the `g` attribute is available in the `EprData` object,
       it will be used for the x-axis. Otherwise, the x-values (`x`) will be used.
     """
 
@@ -209,42 +226,44 @@ def plot_2d(eprdata_list,g_scale,plot_type='stacked',slices='all', spacing=0.5):
             x = eprdata_list[0].g
         else:
             x = eprdata_list[0].x
-            warnings.warn('Unable to set g values as axis.')  
+            warnings.warn("Unable to set g values as axis.")
     else:
         x = eprdata_list[0].x
     y = eprdata_list[0].y
     num_slices, slice_len = data.shape
 
     # Select slices
-    if slices == 'all':
+    if slices == "all":
         selected_slices = range(num_slices)
     elif isinstance(slices, list):
         selected_slices = [s for s in slices if 0 <= s < num_slices]
     elif isinstance(slices, range):
         selected_slices = [s for s in slices if 0 <= s < num_slices]
     else:
-        raise ValueError("Invalid value for 'slices'. Must be 'all', a list, or a range.")
+        raise ValueError(
+            "Invalid value for 'slices'. Must be 'all', a list, or a range."
+        )
 
     # Set color scheme for slices
     num_selected_slices = len(selected_slices)
 
-    slice_colors = cm.winter(np.linspace(0, 1, num_selected_slices)) 
+    slice_colors = cm.winter(np.linspace(0, 1, num_selected_slices))
 
-    if plot_type=='surf':
-        fig,ax = surf_plot(data,x,y,slice_len,selected_slices)
-    elif plot_type=='superimposed':
-        fig,ax = superimposed_plot(data,x,y,selected_slices,slice_colors)
-    elif plot_type=='stacked':
-        fig,ax = stack_plot(data,x,y,selected_slices,slice_colors,spacing)
-    elif plot_type=='pcolor':
-        fig,ax = pcolor_plot(data,x,y,slice_len,selected_slices)
-    elif plot_type=='slider':
-        fig,ax = slider_plot(data,x,y,slice_len,selected_slices)
+    if plot_type == "surf":
+        fig, ax = surf_plot(data, x, y, slice_len, selected_slices)
+    elif plot_type == "superimposed":
+        fig, ax = superimposed_plot(data, x, y, selected_slices, slice_colors)
+    elif plot_type == "stacked":
+        fig, ax = stack_plot(data, x, y, selected_slices, slice_colors, spacing)
+    elif plot_type == "pcolor":
+        fig, ax = pcolor_plot(data, x, y, slice_len, selected_slices)
+    elif plot_type == "slider":
+        fig, ax = slider_plot(data, x, y, slice_len, selected_slices)
 
-    return fig,ax
+    return fig, ax
 
-def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
 
+def stack_plot(data, x, y, selected_slices, slice_colors, spacing):
     """
     Create a stacked plot for 2D EPR data slices.
 
@@ -272,22 +291,29 @@ def stack_plot(data,x,y,selected_slices,slice_colors,spacing):
 
     Notes
     -----
-    - This function plots each slice of the 2D data array, offset vertically by the 
+    - This function plots each slice of the 2D data array, offset vertically by the
       specified `spacing` to create a stacked appearance.
-    - The slices are drawn with colors from the `slice_colors` array, and the transparency 
+    - The slices are drawn with colors from the `slice_colors` array, and the transparency
       is controlled by the `alpha` parameter.
     - Complex data is plotted using the real part only.
     """
 
-    fig,ax = plt.subplots()
+    fig, ax = plt.subplots()
     for idx, slice_idx in enumerate(selected_slices):
-        slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
-        ax.plot(x,slice_data + idx * spacing, color=slice_colors[idx % len(slice_colors)], alpha=0.7)
+        slice_data = (
+            np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
+        )
+        ax.plot(
+            x,
+            slice_data + idx * spacing,
+            color=slice_colors[idx % len(slice_colors)],
+            alpha=0.7,
+        )
 
-    return fig,ax
+    return fig, ax
 
-def surf_plot(data,x,y,slice_len,selected_slices):
 
+def surf_plot(data, x, y, slice_len, selected_slices):
     """
     Create a 3D surface plot for selected slices of 2D EPR data.
 
@@ -313,22 +339,26 @@ def surf_plot(data,x,y,slice_len,selected_slices):
 
     Notes
     -----
-    - This function creates a 3D surface plot with `x` and `y` as the axes, and the 
+    - This function creates a 3D surface plot with `x` and `y` as the axes, and the
       corresponding data values (`Z`) from the selected slices.
     - Complex data is plotted using the real part only.
     - A color bar is added to the plot to indicate the scale of the surface values.
     """
 
-    fig,ax = plt.subplots(subplot_kw={"projection": "3d"})
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
     X, Y = np.meshgrid(x[range(slice_len)], y[selected_slices])
-    Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
-    surf = ax.plot_surface(X, Y, Z, cmap='jet',rstride=1, cstride=1)
+    Z = (
+        np.real(data[selected_slices, :])
+        if np.iscomplexobj(data)
+        else data[selected_slices, :]
+    )
+    surf = ax.plot_surface(X, Y, Z, cmap="jet", rstride=1, cstride=1)
     fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
 
-    return fig,ax
+    return fig, ax
 
-def superimposed_plot(data,x,y,selected_slices,slice_colors):
 
+def superimposed_plot(data, x, y, selected_slices, slice_colors):
     """
     Create a superimposed plot for selected slices of 2D EPR data.
 
@@ -356,21 +386,28 @@ def superimposed_plot(data,x,y,selected_slices,slice_colors):
     -----
     - This function overlays all selected slices onto a single plot.
     - Complex data is plotted using the real part only.
-    - Each slice is plotted with a different color from the `slice_colors` array, 
+    - Each slice is plotted with a different color from the `slice_colors` array,
       and transparency is controlled by the `alpha` parameter.
     - Only the first slice is labeled in the legend, others are excluded using "_nolegend_".
     """
 
-    fig,ax = plt.subplots()
+    fig, ax = plt.subplots()
     for idx, slice_idx in enumerate(selected_slices):
-        slice_data = np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
-        ax.plot(x,slice_data, color=slice_colors[idx % len(slice_colors)], alpha=0.5, label=f'Slice {slice_idx}' if idx == 0 else "_nolegend_")
-    
-    return fig,ax
+        slice_data = (
+            np.real(data[slice_idx]) if np.iscomplexobj(data) else data[slice_idx]
+        )
+        ax.plot(
+            x,
+            slice_data,
+            color=slice_colors[idx % len(slice_colors)],
+            alpha=0.5,
+            label=f"Slice {slice_idx}" if idx == 0 else "_nolegend_",
+        )
+
+    return fig, ax
 
 
-def pcolor_plot(data,x,y,slice_len,selected_slices):
-
+def pcolor_plot(data, x, y, slice_len, selected_slices):
     """
     Create a pseudocolor plot for selected slices of 2D EPR data.
 
@@ -401,14 +438,17 @@ def pcolor_plot(data,x,y,slice_len,selected_slices):
     - A color bar is added to the plot to indicate the scale of the values.
     """
 
-    fig,ax = plt.subplots()
+    fig, ax = plt.subplots()
     X, Y = np.meshgrid(x[range(slice_len)], y[selected_slices])
-    Z = np.real(data[selected_slices, :]) if np.iscomplexobj(data) else data[selected_slices, :]
-    pc = ax.pcolor(X, Y, Z, cmap='jet')
+    Z = (
+        np.real(data[selected_slices, :])
+        if np.iscomplexobj(data)
+        else data[selected_slices, :]
+    )
+    pc = ax.pcolor(X, Y, Z, cmap="jet")
     fig.colorbar(pc)
 
-    return fig,ax
-
+    return fig, ax
 
 def slider_plot(data, x, y, slice_len, selected_slices):
 
@@ -528,8 +568,7 @@ def slider_plot(data, x, y, slice_len, selected_slices):
     return fig, ax
 
 
-def interactive_points_selector(x,y):
-
+def interactive_points_selector(x, y):
     """
     Interactively select points from a plot of 1D EPR data.
 
@@ -547,16 +586,16 @@ def interactive_points_selector(x,y):
 
     Notes
     -----
-    - This function creates an interactive plot where points can be selected by left-clicking 
-      on the plot. After selecting all desired points, the user can click the 'Done' button 
+    - This function creates an interactive plot where points can be selected by left-clicking
+      on the plot. After selecting all desired points, the user can click the 'Done' button
       to finalize the selection.
-    - The function returns the indices of the selected points, sorted in the order of their 
+    - The function returns the indices of the selected points, sorted in the order of their
       x-axis values.
     """
-    
-    fig,ax =plt.subplots()
-    ax.plot(x,y)
-    ax.set_title('Select points by left click. Click Done after selecting all points.')
+
+    fig, ax = plt.subplots()
+    ax.plot(x, y)
+    ax.set_title("Select points by left click. Click Done after selecting all points.")
     selected_points = []
 
     def clicked(event):
@@ -564,38 +603,39 @@ def interactive_points_selector(x,y):
             x_id = event.xdata
             idx = int((np.abs(x - x_id)).argmin())
             selected_points.append(idx)
-            ax.plot(x[idx],y[idx],'rx')
+            ax.plot(x[idx], y[idx], "rx")
             fig.canvas.draw()
+
     def done(event):
         plt.close(fig)
-    
+
     done_button_ax = plt.axes([0.8, 0.05, 0.1, 0.075])
-    done_button = Button(done_button_ax, 'Done')
+    done_button = Button(done_button_ax, "Done")
     done_button.on_clicked(done)
-    fig.canvas.mpl_connect('button_press_event', clicked)
+    fig.canvas.mpl_connect("button_press_event", clicked)
 
     # block function until figure is closed.
     plt.show(block=True)
-    
+
     ## sort the points
     selected_points_sorted = sorted(selected_points, key=lambda idx: x[idx])
 
     return np.unique(np.array(selected_points_sorted, dtype=int))
 
-def data_cursor(fig=None):
 
+def data_cursor(fig=None):
     """
     Adds an interactive data cursor to a Matplotlib figure.
 
-    This function enables a crosshair cursor that tracks mouse movement 
+    This function enables a crosshair cursor that tracks mouse movement
     within a given figure and displays the current x and y coordinates.
-    Additionally, it supports measuring horizontal distances between 
+    Additionally, it supports measuring horizontal distances between
     two x-coordinates using right-click dragging or Ctrl + Left Click.
 
     Parameters
     ----------
     fig : matplotlib.figure.Figure, optional
-        The Matplotlib figure to which the data cursor will be added. 
+        The Matplotlib figure to which the data cursor will be added.
         If None, the current active figure (`plt.gcf()`) is used.
 
     Notes
@@ -606,7 +646,7 @@ def data_cursor(fig=None):
     - The measured distance (ΔX) is displayed in the bottom-left of the figure.
     - The reference vertical line is removed on releasing the mouse button.
     """
-    
+
     if fig is None:
         fig = plt.gcf()
 
@@ -614,16 +654,20 @@ def data_cursor(fig=None):
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
 
-    h_line, = ax.plot([xlim[0], xlim[1]], [(ylim[0] + ylim[1]) / 2] * 2, 'r--', lw=1)
-    v_line, = ax.plot([(xlim[0] + xlim[1]) / 2] * 2, [ylim[0], ylim[1]], 'r--', lw=1)
+    (h_line,) = ax.plot([xlim[0], xlim[1]], [(ylim[0] + ylim[1]) / 2] * 2, "r--", lw=1)
+    (v_line,) = ax.plot([(xlim[0] + xlim[1]) / 2] * 2, [ylim[0], ylim[1]], "r--", lw=1)
 
-    coord_text = ax.text(0.02, 0.95, '', transform=ax.transAxes, fontsize=10, color='red')
-    dist_text = ax.text(0.02, 0.02, '', transform=ax.transAxes, fontsize=10, color='blue')
-    ref_v_line, = ax.plot([], [], 'b-', lw=1)
-    drag_v_line, = ax.plot([], [], 'b-', lw=1)
+    coord_text = ax.text(
+        0.02, 0.95, "", transform=ax.transAxes, fontsize=10, color="red"
+    )
+    dist_text = ax.text(
+        0.02, 0.02, "", transform=ax.transAxes, fontsize=10, color="blue"
+    )
+    (ref_v_line,) = ax.plot([], [], "b-", lw=1)
+    (drag_v_line,) = ax.plot([], [], "b-", lw=1)
 
     ref_x = None
-    ctrl_pressed = False  
+    ctrl_pressed = False
 
     def on_mouse_move(event):
         nonlocal ref_x
@@ -631,20 +675,20 @@ def data_cursor(fig=None):
             x, y = event.xdata, event.ydata
             h_line.set_ydata([y, y])
             v_line.set_xdata([x, x])
-            coord_text.set_text(f'X: {x:.2f}, Y: {y:.2f}')
+            coord_text.set_text(f"X: {x:.2f}, Y: {y:.2f}")
 
             # Handling dragging for right-click OR Ctrl + Left Click
-            if (event.button == 3 or (ctrl_pressed and event.button is None)):
-                if ref_x is None:  
-                    ref_x = x 
+            if event.button == 3 or (ctrl_pressed and event.button is None):
+                if ref_x is None:
+                    ref_x = x
                     ref_v_line.set_xdata([ref_x, ref_x])
                     ref_v_line.set_ydata(ax.get_ylim())
 
-                dist_text.set_text(f'ΔX: {abs(x - ref_x):.2f}')
+                dist_text.set_text(f"ΔX: {abs(x - ref_x):.2f}")
                 drag_v_line.set_xdata([x, x])
                 drag_v_line.set_ydata(ax.get_ylim())
             else:
-                dist_text.set_text('')
+                dist_text.set_text("")
 
             fig.canvas.draw_idle()
 
@@ -663,23 +707,23 @@ def data_cursor(fig=None):
             ref_v_line.set_ydata([])
             drag_v_line.set_xdata([])
             drag_v_line.set_ydata([])
-            dist_text.set_text('')
+            dist_text.set_text("")
             fig.canvas.draw_idle()
 
     def on_key_press(event):
         nonlocal ctrl_pressed
-        if event.key == 'control':
+        if event.key == "control":
             ctrl_pressed = True
 
     def on_key_release(event):
         nonlocal ctrl_pressed
-        if event.key == 'control':
+        if event.key == "control":
             ctrl_pressed = False
 
-    fig.canvas.mpl_connect('motion_notify_event', on_mouse_move)
-    fig.canvas.mpl_connect('button_press_event', on_mouse_press)
-    fig.canvas.mpl_connect('button_release_event', on_mouse_release)
-    fig.canvas.mpl_connect('key_press_event', on_key_press)
-    fig.canvas.mpl_connect('key_release_event', on_key_release)
+    fig.canvas.mpl_connect("motion_notify_event", on_mouse_move)
+    fig.canvas.mpl_connect("button_press_event", on_mouse_press)
+    fig.canvas.mpl_connect("button_release_event", on_mouse_release)
+    fig.canvas.mpl_connect("key_press_event", on_key_press)
+    fig.canvas.mpl_connect("key_release_event", on_key_release)
 
     plt.show()

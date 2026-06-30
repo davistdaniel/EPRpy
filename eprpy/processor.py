@@ -9,6 +9,7 @@ from scipy.signal import find_peaks
 # EPRpy
 from eprpy.plotter import interactive_points_selector
 
+
 def _scale_between(eprdata, min_val=None, max_val=None):
     """
     Scale the data in an `EprData` object to a specified range.
@@ -88,7 +89,15 @@ def _integrate(eprdata):
 
 
 def _baseline_correct(
-    eprdata, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False
+    eprdata,
+    interactive=False,
+    npts=10,
+    method="linear",
+    spline_smooth=1e-5,
+    order=2,
+    init_vals=None,
+    bounds=(-np.inf, np.inf),
+    fit_eseem_max=False,
 ):
     """
     Perform baseline correction on the data in an `EprData` object.
@@ -138,7 +147,16 @@ def _baseline_correct(
 
     if y.ndim == 2:
         bc_data, baselines = _baseline_correct_2d(
-            x, y, interactive, npts, method, spline_smooth, order,init_vals,bounds,fit_eseem_max
+            x,
+            y,
+            interactive,
+            npts,
+            method,
+            spline_smooth,
+            order,
+            init_vals,
+            bounds,
+            fit_eseem_max,
         )
         eprdata_proc.data = bc_data
         eprdata_proc.baseline = baselines
@@ -147,7 +165,17 @@ def _baseline_correct(
         )
 
     elif y.ndim == 1:
-        bc_data,baseline = _baseline_correct_1d(x, y, interactive, npts, method, spline_smooth, order,init_vals,bounds,fit_eseem_max
+        bc_data, baseline = _baseline_correct_1d(
+            x,
+            y,
+            interactive,
+            npts,
+            method,
+            spline_smooth,
+            order,
+            init_vals,
+            bounds,
+            fit_eseem_max,
         )
 
         eprdata_proc.data = bc_data
@@ -158,9 +186,10 @@ def _baseline_correct(
 
     return eprdata_proc
 
-def _exponential_decay(x,c,tau,y_offset):
+
+def _exponential_decay(x, c, tau, y_offset):
     """
-    Returns an exponential_decay. 
+    Returns an exponential_decay.
 
     Parameters
     ----------
@@ -177,17 +206,29 @@ def _exponential_decay(x,c,tau,y_offset):
     -------
     [np.ndarray]
         An exponential decay.
-    """    
+    """
 
-    return c*(np.exp(-(x/tau)))+y_offset
+    return c * (np.exp(-(x / tau))) + y_offset
 
-def _baseline_correct_1d(x,y, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False):
+
+def _baseline_correct_1d(
+    x,
+    y,
+    interactive=False,
+    npts=10,
+    method="linear",
+    spline_smooth=1e-5,
+    order=2,
+    init_vals=None,
+    bounds=(-np.inf, np.inf),
+    fit_eseem_max=False,
+):
     if np.iscomplexobj(y):
         y = y.real
     if interactive:
-            baseline_points = interactive_points_selector(x, y)
+        baseline_points = interactive_points_selector(x, y)
     else:
-        if npts>0:
+        if npts > 0:
             baseline_points = np.concatenate(
                 [np.arange(npts), np.arange(len(y) - npts, len(y))]
             )
@@ -215,20 +256,36 @@ def _baseline_correct_1d(x,y, interactive=False, npts=10, method="linear", splin
         baseline = spline(x)
     elif method == "exponential_decay":
         if fit_eseem_max:
-            peaks,_ = find_peaks(y_fit)
-            x_fit,y_fit = x_fit[peaks],y_fit[peaks]
+            peaks, _ = find_peaks(y_fit)
+            x_fit, y_fit = x_fit[peaks], y_fit[peaks]
         if init_vals is None:
-            c,tau,y_offset = np.max(x_fit)-np.min(y_fit),-1*x[np.argmin(np.abs((np.mean(y)-y)))]/np.log(0.5),np.min(y_fit)
-            init_vals = [c,tau,y_offset]
-        best_vals, covar = curve_fit(_exponential_decay, x_fit, y_fit, p0=init_vals,bounds=bounds)
-        baseline = _exponential_decay(x,*best_vals)
+            c, tau, y_offset = (
+                np.max(x_fit) - np.min(y_fit),
+                -1 * x[np.argmin(np.abs((np.mean(y) - y)))] / np.log(0.5),
+                np.min(y_fit),
+            )
+            init_vals = [c, tau, y_offset]
+        best_vals, covar = curve_fit(
+            _exponential_decay, x_fit, y_fit, p0=init_vals, bounds=bounds
+        )
+        baseline = _exponential_decay(x, *best_vals)
     else:
         raise ValueError("Method must be 'linear', 'polynomial', or 'spline'.")
 
     return y - baseline, baseline
 
+
 def _baseline_correct_2d(
-    x, y, interactive=False, npts=10, method="linear", spline_smooth=1e-5, order=2,init_vals=None,bounds = (-np.inf, np.inf),fit_eseem_max=False
+    x,
+    y,
+    interactive=False,
+    npts=10,
+    method="linear",
+    spline_smooth=1e-5,
+    order=2,
+    init_vals=None,
+    bounds=(-np.inf, np.inf),
+    fit_eseem_max=False,
 ):
     """
     Perform baseline correction on 2D data.
@@ -282,7 +339,7 @@ def _baseline_correct_2d(
     if interactive:
         baseline_points = interactive_points_selector(x, y[0])
     else:
-        if npts>0:
+        if npts > 0:
             baseline_points = np.concatenate(
                 [np.arange(npts), np.arange(len(y[0]) - npts, len(y[0]))]
             )
@@ -294,7 +351,7 @@ def _baseline_correct_2d(
         x_fit = x[baseline_points]
     else:
         raise ValueError(
-            "No baseline points selected. Please select points for baseline correction." # redundant
+            "No baseline points selected. Please select points for baseline correction."  # redundant
         )
 
     for idx, arr in enumerate(y):
@@ -310,13 +367,19 @@ def _baseline_correct_2d(
             baseline = spline(x)
         elif method == "exponential_decay":
             if fit_eseem_max:
-                peaks,_ = find_peaks(y_fit)
-                x_fit,y_fit = x_fit[peaks],y_fit[peaks]
+                peaks, _ = find_peaks(y_fit)
+                x_fit, y_fit = x_fit[peaks], y_fit[peaks]
             if init_vals is None:
-                c,tau,y_offset = np.max(x_fit)-np.min(y_fit),-1*x[np.argmin(np.abs((np.mean(y)-y)))]/np.log(0.5),np.min(y_fit)
-                init_vals = [c,tau,y_offset]
-            best_vals, covar = curve_fit(_exponential_decay, x_fit, y_fit, p0=init_vals,bounds=bounds)
-            baseline = _exponential_decay(x,*best_vals)
+                c, tau, y_offset = (
+                    np.max(x_fit) - np.min(y_fit),
+                    -1 * x[np.argmin(np.abs((np.mean(y) - y)))] / np.log(0.5),
+                    np.min(y_fit),
+                )
+                init_vals = [c, tau, y_offset]
+            best_vals, covar = curve_fit(
+                _exponential_decay, x_fit, y_fit, p0=init_vals, bounds=bounds
+            )
+            baseline = _exponential_decay(x, *best_vals)
         else:
             raise ValueError("Method must be 'linear', 'polynomial', or 'spline'.")
 
@@ -378,4 +441,3 @@ def _derivative(eprdata, sigma=1, axis=-1):
     )
 
     return eprdata_proc
-
