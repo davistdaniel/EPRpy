@@ -1,4 +1,4 @@
-__version__ = "0.9.0a8"
+__version__ = "0.9.0b3"
 from eprpy.loader import load, EprData
 from eprpy.plotter import eprplot
 import numpy as np

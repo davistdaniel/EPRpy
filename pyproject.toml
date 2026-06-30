@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eprpy"
-version = "0.9.0b2"
+version = "0.9.0b3"
 description = "A Python library for working with EPR spectroscopic data."
 readme = "README.md"
-requires-python = ">=3.9, <=3.13"
+requires-python = ">=3.9, <=3.14"
 authors = [
     { name = "Davis Thomas Daniel", email = "davisthomasdaniel@gmail.com" }
 ]
